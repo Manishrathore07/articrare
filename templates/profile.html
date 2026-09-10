@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ artist.username }} — Articrare Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'index' %}" class="brand" style="text-decoration: none;">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Articrare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="{% url 'index' %}" class="nav-link">← Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="btn btn-outline">👤 {{ user.username }}</a>
+          <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+
+    <!-- Artist Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar-lg">{{ artist.username|first|upper }}</div>
+      <div class="profile-info">
+        <h1 class="profile-name">{{ artist.username }}</h1>
+        {% if artist.email %}
+          <p class="text-muted">{{ artist.email }}</p>
+        {% endif %}
+        <p class="text-muted">Joined {{ artist.date_joined|date:"F Y" }}</p>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="stats-strip">
+      <div class="stat-item">
+        <span class="stat-value">{{ sketch_count }}</span>
+        <span class="stat-label">Sketches</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">{{ total_likes }}</span>
+        <span class="stat-label">Total Likes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">{% if avg_score %}{{ avg_score }}/10{% else %}—{% endif %}</span>
+        <span class="stat-label">Avg Score</span>
+      </div>
+    </div>
+
+    <!-- Artist Gallery -->
+    <div style="margin-top: 2.5rem;">
+      <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">{{ artist.username }}'s Sketches</h2>
+
+      <div class="gallery-grid">
+        {% for art in artworks %}
+          <article class="artwork-card" id="art-{{ art.id }}">
+            <div class="artwork-media">
+              <img src="{{ art.image.url }}" alt="{{ art.title }}">
+            </div>
+            <div class="artwork-details">
+              <div>
+                <div class="artwork-meta">
+                  <span class="category-chip">{{ art.category }}</span>
+                  <span class="critique-badge">{{ art.focus }}</span>
+                </div>
+                <h3 class="artwork-title">{{ art.title }}</h3>
+                {% if art.notes %}
+                  <p class="artwork-notes">"{{ art.notes }}"</p>
+                {% endif %}
+
+                <div class="critique-box">
+                  <div class="critique-header">
+                    <div class="critique-rating">
+                      <span>★</span>
+                      <span>{{ art.score }} / 10</span>
+                    </div>
+                  </div>
+                  <div class="critique-points">
+                    <div class="point-strength"><strong>✓ Strength:</strong> {{ art.strengths }}</div>
+                    <div class="point-suggestion"><strong>→ Suggestion:</strong> {{ art.suggestions }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="artwork-actions">
+                <button class="btn-like" data-id="{{ art.id }}">
+                  <span class="like-icon">♥</span>
+                  <span class="like-count">{{ art.likes }}</span> Likes
+                </button>
+                <span class="timestamp">{{ art.created_at|timesince }} ago</span>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="empty-gallery">
+            <div style="font-size: 3rem; margin-bottom: 0.75rem;">🎨</div>
+            <h3>No sketches uploaded yet</h3>
+            {% if user == artist %}
+              <p class="text-muted">Head to the <a href="{% url 'index' %}" class="link-accent">gallery</a> and publish your first sketch!</p>
+            {% else %}
+              <p class="text-muted">This artist hasn't uploaded any sketches yet.</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>Articrare</strong> &bull; Milestone 3: User Authentication & Artist Profiles</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'app.js' %}"></script>
+</body>
+</html>

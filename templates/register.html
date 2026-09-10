@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Articrare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body class="auth-body">
+
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'index' %}" class="brand" style="text-decoration: none;">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Articrare</span>
+      </a>
+      <div class="nav-actions">
+        <span class="text-muted" style="font-size:0.9rem;">Already an artist?</span>
+        <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">✦</div>
+        <h1>Create your artist account</h1>
+        <p class="text-muted">Join the Articrare community and start sharing your sketches</p>
+      </div>
+
+      {% if error %}
+        <div class="alert-error">⚠ {{ error }}</div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'register' %}" class="auth-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" value="{{ username|default:'' }}"
+                 placeholder="e.g. manish_art" required autocomplete="username">
+          <span class="form-hint">This will be your public artist name on Articrare.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email (optional)</label>
+          <input type="email" id="email" name="email" value="{{ email|default:'' }}"
+                 placeholder="you@example.com" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password1">Password</label>
+          <input type="password" id="password1" name="password1"
+                 placeholder="At least 8 characters" required autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+          <label for="password2">Confirm Password</label>
+          <input type="password" id="password2" name="password2"
+                 placeholder="Repeat your password" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Create Account →
+        </button>
+      </form>
+
+      <p class="auth-footer-text">
+        Already have an account? <a href="{% url 'login' %}" class="link-accent">Login here</a>
+      </p>
+    </div>
+  </main>
+
+</body>
+</html>

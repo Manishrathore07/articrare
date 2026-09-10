@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media files (user uploads) — don't commit to git
+media/
+
+# Static collected
+staticfiles/
+
+# Environment variables — NEVER commit these
+.env
+
+# Virtual environment
+venv/
+env/
+.venv/
+ENV/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

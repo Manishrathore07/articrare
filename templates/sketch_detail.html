@@ -1,0 +1,277 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ artwork.title }} — Articrare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'index' %}" class="brand" style="text-decoration: none;">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Articrare</span>
+      </a>
+      <nav class="nav-links">
+        <a href="{% url 'index' %}" class="nav-link">← Back to Gallery</a>
+      </nav>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="btn btn-outline">👤 {{ user.username }}</a>
+          <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <div class="detail-layout">
+
+      <!-- LEFT: Sketch Image & Auto Critique -->
+      <div class="detail-left">
+        <div class="detail-image-card">
+          <img src="{{ artwork.image.url }}" alt="{{ artwork.title }}" class="detail-image">
+        </div>
+
+        <!-- Auto-generated AI Critique -->
+        <div class="card" style="margin-top: 1.5rem;">
+          <div class="detail-section-title">
+            {% if artwork.ai_powered %}🤖 Gemini AI Critique{% else %}📋 Auto Critique{% endif %}
+          </div>
+          {% if artwork.ai_powered %}
+            <p style="font-size:0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              Analyzed by Google Gemini Vision — personalized to your sketch
+            </p>
+          {% endif %}
+          <div class="critique-header" style="margin-bottom: 0.75rem;">
+            <div class="critique-rating">
+              <span>★</span>
+              <span>{{ artwork.score }} / 10</span>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              {% if artwork.ai_powered %}<span class="ai-badge">🤖 Gemini AI</span>{% endif %}
+              <span class="critique-badge">{{ artwork.focus }}</span>
+            </div>
+          </div>
+          <div class="critique-points">
+            <div class="point-strength" style="margin-bottom: 0.5rem;"><strong>✓ Strength:</strong> {{ artwork.strengths }}</div>
+            <div class="point-suggestion"><strong>→ Suggestion:</strong> {{ artwork.suggestions }}</div>
+          </div>
+        </div>
+
+        <!-- Community Score Summary -->
+        {% if community_avg %}
+          <div class="card community-avg-card" style="margin-top: 1rem;">
+            <div class="detail-section-title">👥 Community Score</div>
+            <div class="community-score-large">
+              <span class="community-score-num">{{ community_avg }}</span>
+              <span class="community-score-denom">/ 10</span>
+            </div>
+            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.25rem;">
+              Based on {{ artwork.comment_count }} community critique{% if artwork.comment_count != 1 %}s{% endif %}
+            </p>
+            <!-- Star visual display -->
+            <div class="star-display" style="margin-top: 0.75rem;">
+              {% for i in star_range %}
+                <span class="star-visual {% if i <= community_avg %}star-filled{% endif %}">★</span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- RIGHT: Info, Comments, Rating Form -->
+      <div class="detail-right">
+        <!-- Sketch Info Header -->
+        <div class="detail-info-card card">
+          <div class="artwork-meta" style="margin-bottom: 1rem;">
+            {% if artwork.user %}
+              <a href="{% url 'profile' artwork.user.username %}" class="artist-tag artist-link">
+                <span class="artist-avatar">{{ artwork.user.username|first|upper }}</span>
+                <strong>{{ artwork.user.username }}</strong>
+              </a>
+            {% else %}
+              <span class="artist-tag"><strong>{{ artwork.artist_name }}</strong></span>
+            {% endif %}
+            <span class="category-chip">{{ artwork.category }}</span>
+          </div>
+          <h1 class="detail-title">{{ artwork.title }}</h1>
+          {% if artwork.notes %}
+            <p class="artwork-notes">"{{ artwork.notes }}"</p>
+          {% endif %}
+          <div class="detail-meta-row">
+            <button class="btn-like" id="detailLikeBtn" data-id="{{ artwork.id }}">
+              <span class="like-icon">♥</span>
+              <span class="like-count">{{ artwork.likes }}</span> Likes
+            </button>
+            <span class="timestamp">{{ artwork.created_at|date:"d M Y" }}</span>
+          </div>
+        </div>
+
+        <!-- Rate & Critique Form -->
+        <div class="card" style="margin-top: 1.5rem;">
+          {% if user.is_authenticated %}
+            <div class="detail-section-title">
+              {% if user_comment %}✏️ Edit Your Critique{% else %}✍️ Write a Critique{% endif %}
+            </div>
+
+            <form method="POST" action="{% url 'add_comment' artwork.id %}" class="critique-form">
+              {% csrf_token %}
+
+              <!-- Interactive Star Rating -->
+              <div class="form-group">
+                <label>Your Rating (1–10 stars)</label>
+                <div class="star-picker" id="starPicker">
+                  {% for i in star_range %}
+                    <button type="button"
+                            class="star-btn {% if user_comment and user_comment.rating >= i %}star-active{% endif %}"
+                            data-value="{{ i }}">★</button>
+                  {% endfor %}
+                  <span class="star-picker-label" id="starLabel">
+                    {% if user_comment and user_comment.rating %}{{ user_comment.rating }}/10{% else %}Click to rate{% endif %}
+                  </span>
+                </div>
+                <input type="hidden" name="rating" id="ratingInput" value="{% if user_comment %}{{ user_comment.rating|default:'' }}{% endif %}">
+              </div>
+
+              <div class="form-group">
+                <label for="commentText">Your Critique</label>
+                <textarea id="commentText" name="text" rows="5"
+                          placeholder="What works well? What could the artist improve? Be specific and constructive..."
+                          required>{% if user_comment %}{{ user_comment.text }}{% endif %}</textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                {% if user_comment %}Update Critique →{% else %}Submit Critique →{% endif %}
+              </button>
+            </form>
+          {% else %}
+            <div class="detail-section-title">💬 Write a Critique</div>
+            <div class="auth-prompt">
+              <p>Join the Articrare community to rate sketches and leave constructive feedback.</p>
+              <div style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Community Critiques Section -->
+        <div style="margin-top: 2rem;">
+          <div class="detail-section-title" style="margin-bottom: 1.25rem;">
+            💬 Community Critiques
+            <span class="critique-count-badge">{{ artwork.comment_count }}</span>
+          </div>
+
+          {% if comments %}
+            <div class="comments-list">
+              {% for comment in comments %}
+                <div class="comment-card {% if comment.user == user %}comment-own{% endif %}">
+                  <div class="comment-header">
+                    <a href="{% url 'profile' comment.user.username %}" class="artist-link">
+                      <span class="artist-avatar">{{ comment.user.username|first|upper }}</span>
+                      <strong>{{ comment.user.username }}</strong>
+                    </a>
+                    <div class="comment-meta-right">
+                      {% if comment.rating %}
+                        <div class="comment-rating">
+                          <span class="comment-star">★</span>
+                          <span>{{ comment.rating }}/10</span>
+                        </div>
+                      {% endif %}
+                      <span class="timestamp">{{ comment.created_at|timesince }} ago</span>
+                    </div>
+                  </div>
+                  <p class="comment-text">{{ comment.text }}</p>
+                  {% if comment.user == user %}
+                    <span class="your-review-tag">Your critique</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-gallery">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💭</div>
+              <h3>No critiques yet</h3>
+              <p class="text-muted">Be the first to give this artist constructive feedback!</p>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>Articrare</strong> &bull; Milestone 4: Community Ratings & Critiques</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'app.js' %}"></script>
+  <script>
+    // Interactive star picker
+    const starBtns = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('ratingInput');
+    const starLabel = document.getElementById('starLabel');
+
+    starBtns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => highlightStars(btn.dataset.value));
+      btn.addEventListener('mouseleave', () => highlightStars(ratingInput.value || 0));
+      btn.addEventListener('click', () => {
+        ratingInput.value = btn.dataset.value;
+        starLabel.textContent = btn.dataset.value + '/10';
+        highlightStars(btn.dataset.value);
+      });
+    });
+
+    function highlightStars(count) {
+      starBtns.forEach(b => {
+        if (parseInt(b.dataset.value) <= parseInt(count)) {
+          b.classList.add('star-active');
+        } else {
+          b.classList.remove('star-active');
+        }
+      });
+    }
+
+    // Like button on detail page
+    const detailLikeBtn = document.getElementById('detailLikeBtn');
+    if (detailLikeBtn) {
+      detailLikeBtn.addEventListener('click', function () {
+        const artId = this.getAttribute('data-id');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        const token = csrfToken ? csrfToken.value : '';
+
+        fetch(`/like/${artId}/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': token }
+        })
+        .then(r => r.json())
+        .then(data => {
+          this.querySelector('.like-count').textContent = data.likes;
+          this.classList.add('liked');
+        });
+      });
+    }
+  </script>
+</body>
+</html>

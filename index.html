@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Articrare — Sketch Sharing & Feedback Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Articrare</span>
+        <span class="badge">Milestone 1</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#upload" class="nav-link">Upload Sketch</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#critiques" class="nav-link">Critiques</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn btn-outline" id="artistProfileBtn">Artist: Manish</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Intro -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1 class="hero-title">Where sketches meet <span class="gradient-text">constructive eyes</span>.</h1>
+      <p class="hero-subtitle">
+        Upload your raw sketches, studies, and concept art. Receive focused community feedback, ratings, and actionable critique to level up your craft.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content Grid -->
+  <main class="container main-layout">
+
+    <!-- Left Column: Upload & Live Preview -->
+    <section class="upload-section" id="upload">
+      <div class="card upload-card">
+        <div class="card-header">
+          <h2>Share a New Sketch</h2>
+          <p class="text-muted">Drop your sketch below and see instant preview</p>
+        </div>
+
+        <form id="sketchForm" class="sketch-form">
+          <!-- Dropzone / File Picker -->
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" accept="image/*" class="file-input">
+            <div class="dropzone-content" id="dropzonePrompt">
+              <div class="upload-icon">🎨</div>
+              <p class="dropzone-title">Click to choose image or drag & drop</p>
+              <span class="dropzone-subtitle">PNG, JPG, WEBP, or GIF (Up to 10MB)</span>
+            </div>
+
+            <!-- Live Image Preview inside Dropzone -->
+            <div class="preview-container hidden" id="previewContainer">
+              <img id="imagePreview" alt="Sketch Preview" class="preview-image">
+              <button type="button" class="btn-remove-preview" id="removePreviewBtn" title="Remove image">✕</button>
+            </div>
+          </div>
+
+          <!-- Metadata Fields -->
+          <div class="form-group">
+            <label for="sketchTitle">Sketch Title</label>
+            <input type="text" id="sketchTitle" placeholder="e.g. Zoro Sword Stance Study" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sketchCategory">Style / Medium</label>
+              <select id="sketchCategory">
+                <option value="Pencil & Graphite">Pencil & Graphite</option>
+                <option value="Ink & Line Art">Ink & Line Art</option>
+                <option value="Charcoal">Charcoal</option>
+                <option value="Anime & Manga">Anime & Manga</option>
+                <option value="Digital Sketch">Digital Sketch</option>
+                <option value="Concept Art">Concept Art</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="sketchFocus">Critique Focus</label>
+              <select id="sketchFocus">
+                <option value="General Feedback">General Feedback</option>
+                <option value="Anatomy & Proportions">Anatomy & Proportions</option>
+                <option value="Shading & Contrast">Shading & Contrast</option>
+                <option value="Linework & Cleanliness">Linework & Cleanliness</option>
+                <option value="Perspective & Depth">Perspective & Depth</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sketchNotes">Artist Notes (Optional)</label>
+            <textarea id="sketchNotes" rows="3" placeholder="Tell other artists what you struggled with or what you'd like feedback on..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+            <span>Publish to Gallery</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Gallery & Feedback Feed -->
+    <section class="gallery-section" id="gallery">
+      <div class="gallery-header">
+        <div>
+          <h2>Community Gallery</h2>
+          <p class="text-muted">Fresh sketches and constructive critiques</p>
+        </div>
+        <div class="filter-pills">
+          <button class="pill active">All</button>
+          <button class="pill">Recent</button>
+          <button class="pill">Top Rated</button>
+        </div>
+      </div>
+
+      <!-- Feed Cards Container -->
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- New sketches will be appended here dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>Articrare</strong> &bull; Milestone 1 Frontend Prototype</p>
+      <p class="text-muted">Built for sketch artists. Next milestone: Connecting Python & Django backend.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

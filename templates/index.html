@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Articrare — Sketch Sharing & Feedback Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">Articrare</span>
+        <span class="badge">Django + SQLite</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#upload" class="nav-link">Upload Sketch</a>
+        <a href="#gallery" class="nav-link">Gallery ({{ artworks|length }})</a>
+      </nav>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="btn btn-outline">👤 {{ user.username }}</a>
+          <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Hero & Intro -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1 class="hero-title">Where sketches meet <span class="gradient-text">constructive eyes</span>.</h1>
+      <p class="hero-subtitle">
+        Upload your raw sketches, studies, and concept art. Stored safely in SQLite with actionable critique suggestions.
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content Grid -->
+  <main class="container main-layout">
+
+    <!-- Left Column: Upload & Live Preview -->
+    <section class="upload-section" id="upload">
+      <div class="card upload-card">
+        <div class="card-header">
+          <h2>Share a New Sketch</h2>
+          {% if user.is_authenticated %}
+            <p class="text-muted">Uploading as <strong>{{ user.username }}</strong></p>
+          {% else %}
+            <p class="text-muted"><a href="{% url 'login' %}" class="link-accent">Login</a> or <a href="{% url 'register' %}" class="link-accent">sign up</a> to publish sketches.</p>
+          {% endif %}
+        </div>
+
+        <form id="sketchForm" class="sketch-form" method="POST" action="{% url 'upload_sketch' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Dropzone / File Picker -->
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" name="image" accept="image/*" class="file-input" required>
+            <div class="dropzone-content" id="dropzonePrompt">
+              <div class="upload-icon">🎨</div>
+              <p class="dropzone-title">Click to choose image or drag & drop</p>
+              <span class="dropzone-subtitle">PNG, JPG, WEBP, or GIF</span>
+            </div>
+            <div class="preview-container hidden" id="previewContainer">
+              <img id="imagePreview" alt="Sketch Preview" class="preview-image">
+              <button type="button" class="btn-remove-preview" id="removePreviewBtn" title="Remove image">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sketchTitle">Sketch Title</label>
+            <input type="text" id="sketchTitle" name="title" placeholder="e.g. Zoro Sword Stance Study" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sketchCategory">Style / Medium</label>
+              <select id="sketchCategory" name="category">
+                <option value="Pencil & Graphite">Pencil & Graphite</option>
+                <option value="Ink & Line Art">Ink & Line Art</option>
+                <option value="Charcoal">Charcoal</option>
+                <option value="Anime & Manga">Anime & Manga</option>
+                <option value="Digital Sketch">Digital Sketch</option>
+                <option value="Concept Art">Concept Art</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sketchFocus">Critique Focus</label>
+              <select id="sketchFocus" name="focus">
+                <option value="General Feedback">General Feedback</option>
+                <option value="Anatomy & Proportions">Anatomy & Proportions</option>
+                <option value="Shading & Contrast">Shading & Contrast</option>
+                <option value="Linework & Cleanliness">Linework & Cleanliness</option>
+                <option value="Perspective & Depth">Perspective & Depth</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sketchNotes">Artist Notes (Optional)</label>
+            <textarea id="sketchNotes" name="notes" rows="3" placeholder="What did you struggle with? What feedback are you looking for?"></textarea>
+          </div>
+
+          {% if user.is_authenticated %}
+            <button type="submit" class="btn btn-primary btn-block">
+              <span>Publish to Gallery</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline btn-block">Login to Publish</a>
+          {% endif %}
+        </form>
+      </div>
+    </section>
+
+    <!-- Right Column: Gallery & Feedback Feed -->
+    <section class="gallery-section" id="gallery">
+      <div class="gallery-header">
+        <div>
+          <h2>Community Gallery</h2>
+          <p class="text-muted">Saved in SQLite &bull; Persists on reload</p>
+        </div>
+        <div class="filter-pills">
+          <button class="pill active">All ({{ artworks|length }})</button>
+        </div>
+      </div>
+
+      <div class="gallery-grid" id="galleryGrid">
+        {% for art in artworks %}
+          <article class="artwork-card" id="art-{{ art.id }}">
+            <div class="artwork-media">
+              <img src="{{ art.image.url }}" alt="{{ art.title }}">
+            </div>
+            <div class="artwork-details">
+              <div>
+                <div class="artwork-meta">
+                  {% if art.user %}
+                    <a href="{% url 'profile' art.user.username %}" class="artist-tag artist-link">
+                      <span class="artist-avatar">{{ art.user.username|first|upper }}</span>
+                      <strong>{{ art.user.username }}</strong>
+                    </a>
+                  {% else %}
+                    <span class="artist-tag"><strong>{{ art.artist_name }}</strong></span>
+                  {% endif %}
+                  <span class="category-chip">{{ art.category }}</span>
+                </div>
+                <h3 class="artwork-title">{{ art.title }}</h3>
+                <p class="artwork-notes">"{{ art.notes }}"</p>
+
+                <div class="critique-box {% if art.ai_powered %}critique-box-ai{% endif %}">
+                  <div class="critique-header">
+                    <div class="critique-rating">
+                      <span>★</span>
+                      <span>{{ art.score }} / 10</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                      {% if art.ai_powered %}
+                        <span class="ai-badge">🤖 Gemini AI</span>
+                      {% endif %}
+                      <span class="critique-badge">{{ art.focus }}</span>
+                    </div>
+                  </div>
+                  <div class="critique-points">
+                    <div class="point-strength"><strong>✓ Strength:</strong> {{ art.strengths }}</div>
+                    <div class="point-suggestion"><strong>→ Suggestion:</strong> {{ art.suggestions }}</div>
+                  </div>
+                </div>
+
+                {% with community_avg=art.community_avg_score count=art.comment_count %}
+                <div class="community-score-bar">
+                  {% if community_avg %}
+                    <div class="community-score">
+                      <span class="community-score-label">👥 Community</span>
+                      <span class="community-score-value">{{ community_avg }}/10</span>
+                      <span class="community-count">({{ count }} critique{% if count != 1 %}s{% endif %})</span>
+                    </div>
+                  {% else %}
+                    <span class="no-ratings">No community critiques yet — be first!</span>
+                  {% endif %}
+                </div>
+                {% endwith %}
+              </div>
+
+              <div class="artwork-actions">
+                <button class="btn-like" data-id="{{ art.id }}">
+                  <span class="like-icon">♥</span>
+                  <span class="like-count">{{ art.likes }}</span> Likes
+                </button>
+                <a href="{% url 'sketch_detail' art.id %}" class="btn-critique-link">
+                  💬 View &amp; Critique
+                </a>
+                <span class="timestamp">{{ art.created_at|timesince }} ago</span>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <div class="empty-gallery">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🖼️</div>
+            <h3>No sketches yet</h3>
+            <p class="text-muted">Be the first artist to publish a sketch!</p>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>Articrare</strong> &bull; Milestone 3: User Authentication & Artist Profiles</p>
+      <p class="text-muted">Your sketches and critique data are saved in SQLite permanently.</p>
+    </div>
+  </footer>
+
+  <script src="{% static 'app.js' %}"></script>
+</body>
+</html>
