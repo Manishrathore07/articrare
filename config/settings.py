@@ -28,12 +28,18 @@ if RAILWAY_STATIC_URL:
     if host and host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(host)
 
-# Also allow any *.railway.app and *.up.railway.app domain
-ALLOWED_HOSTS += ['.railway.app', '.up.railway.app']
+# Support Render domains automatically
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# Also allow any *.railway.app, *.up.railway.app and *.onrender.com domain
+ALLOWED_HOSTS += ['.railway.app', '.up.railway.app', '.onrender.com']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://*.up.railway.app',
+    'https://*.onrender.com',
 ]
 
 # -------------------------------------------------------
