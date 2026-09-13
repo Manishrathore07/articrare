@@ -49,12 +49,30 @@
 - Displays artist statistics: total uploaded sketches, cumulative likes, and community average rating.
 - Dedicated gallery showcasing each artist's individual progression over time.
 
-### 📜 6. Dedicated Information Architecture
+### 🔬 6. Interactive AI Vision Scanner Simulator
+- Live before/after toggle comparing **Raw Graphite Studies** against an **AI Neural Heatmap**.
+- Animated sweeping laser bar with SVG neural paths mapping skeletal action lines, cranial proportions, and 8B tonal depth.
+- Real-time diagnostic metrics: landmark count, 9-step gradient scale, and gesture equilibrium score.
+
+### 🎲 7. Daily Sketch Challenge & Dynamic Prompt Generator
+- Real-time countdown timer tracking the next challenge drop.
+- **"🎲 Roll Random Prompt"** button generating tailored drafting themes (e.g. *Foreshortened Hand with Watch*, *Cyberpunk Ronin*, *Classical Statuary Ear*, *Mecha Bevels*).
+- 1-Click **"Accept Challenge"** action that smoothly scrolls up and pre-configures title and medium tags.
+
+### 📊 8. Interactive 10-Point Scorecard & Live Calculator
+- 4 interactive range sliders (0 to 2.5 pts each): Anatomy, Values/Lighting, Linework/Confidence, Composition/Perspective.
+- Live calculation engine that computes composite ratings and grade tier badges (*Exhibition Masterpiece*, *Studio Grade Study*, *Foundation in Progress*, *Raw Warmup*).
+
+### 🥋 9. Classical Draftsmanship Growth Protocols
+- 4 interactive 3D cards with hover tilt covering Pencil Hardness (9B–6H), 30-Second Quickposes, Curved Cross-Hatching, and Ink Line Hierarchy.
+- Direct "Practice This" buttons that immediately prep the studio for study sessions.
+
+### 📜 10. Dedicated Information Architecture
 - **Contact Us (`/contact/`)**: Awwwards-inspired interaction hub with direct request form and creator connect cards.
 - **Terms & Copyright (`/terms/`)**: 100% Artist Copyright and Ownership retention policy and AI privacy standards.
-- **Help Center & FAQ (`/help/`)**: Complete guide explaining Gemini AI vision analysis, star criteria, and constructive feedback standards.
+- **Help Center & FAQ (`/help/` & on-page accordion)**: Complete guide explaining Gemini AI vision analysis, star criteria, and constructive feedback standards.
 
-### ⚡ 7. Production & Cloud Ready
+### ⚡ 11. Production & Cloud Ready
 - **WhiteNoise** for ultra-fast static file serving without external CDN dependencies.
 - Automatic database switching: lightweight **SQLite** for local development, robust **PostgreSQL** in production.
 - Pre-configured `Procfile`, `railway.toml`, and `.env` support.
@@ -215,7 +233,8 @@ articrare/
 - [x] **Milestone 5**: Google Gemini Vision AI Art Critique
 - [x] **Milestone 6**: Production Architecture & Deployment Packaging
 - [x] **Milestone 7**: 3D Motion Canvas, Card Tilt & Bloomberg-Style Layered Pages
-- [ ] **Milestone 8**: Community Leaderboards & Weekly Sketch Prompts
+- [x] **Milestone 8**: Interactive Studio Suite (AI Scanner, Prompt Generator, Live Rubric Calculator, Technical Growth Protocols)
+- [ ] **Milestone 9**: Community Leaderboards & Weekly Contest Judging
 
 ---
 
