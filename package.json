@@ -1,0 +1,23 @@
+{
+  "name": "articrare",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">   <img src=\"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1200&auto=format&fit=crop&q=80\" alt=\"Articrare Banner\" width=\"100%\" style=\"border-radius: 12px; max-height: 380px; object-fit: cover;\" /> </p>",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Manishrathore07/articrare.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Manishrathore07/articrare/issues"
+  },
+  "homepage": "https://github.com/Manishrathore07/articrare#readme",
+  "dependencies": {
+    "motion": "^13.2.0"
+  }
+}

@@ -5,12 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Articrare — Sketch Sharing & Feedback Platform</title>
+  
+  <!-- Custom SVG Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
-<body>
+<body class="studio-dark">
 
   <!-- Navigation Bar -->
   <header class="navbar">
@@ -18,11 +22,11 @@
       <div class="brand">
         <span class="logo-icon">✦</span>
         <span class="logo-text">Articrare</span>
-        <span class="badge">Django + SQLite</span>
+        <span class="badge badge-3d">Studio 3D</span>
       </div>
       <nav class="nav-links">
         <a href="#upload" class="nav-link">Upload Sketch</a>
-        <a href="#gallery" class="nav-link">Gallery ({{ artworks|length }})</a>
+        <a href="#gallery" class="nav-link">Gallery (<span id="galleryCount">{{ artworks|length }}</span>)</a>
       </nav>
       <div class="nav-actions">
         {% if user.is_authenticated %}
@@ -45,13 +49,44 @@
     </div>
   {% endif %}
 
-  <!-- Hero & Intro -->
-  <section class="hero-section">
+  <!-- 3D Hero & Generative Canvas Section -->
+  <section class="hero-section hero-3d">
+    <!-- Interactive 3D Charcoal & Ink Particle Canvas -->
+    <canvas id="artDustCanvas" class="hero-dust-canvas"></canvas>
+    
+    <!-- Generative Sketch Cross-Hatch Wave Overlay -->
+    <div class="hatch-wave-backdrop" aria-hidden="true">
+      <div class="hatch-layer hatch-layer-1"></div>
+      <div class="hatch-layer hatch-layer-2"></div>
+    </div>
+
     <div class="container hero-content">
-      <h1 class="hero-title">Where sketches meet <span class="gradient-text">constructive eyes</span>.</h1>
+      <div class="hero-pill-badge">
+        <span class="pulse-dot"></span>
+        <span>Interactive Sketch Studio</span>
+      </div>
+      <h1 class="hero-title">
+        Where sketches meet <span class="gradient-text gradient-glow">constructive eyes</span>.
+      </h1>
       <p class="hero-subtitle">
-        Upload your raw sketches, studies, and concept art. Stored safely in SQLite with actionable critique suggestions.
+        Upload your raw sketches, charcoal studies, and concept art. Receive focused community feedback, 10-star ratings, and AI vision critique.
       </p>
+
+      <!-- Quick Interactive Stats Bar -->
+      <div class="hero-stats-bar">
+        <div class="stat-pill">
+          <span class="stat-icon">🎨</span>
+          <span><strong>{{ artworks|length }}</strong> Sketches Shared</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">✦</span>
+          <span><strong>3D</strong> Interactive Tilt</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-icon">🤖</span>
+          <span><strong>Gemini</strong> Vision Critique</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -60,7 +95,7 @@
 
     <!-- Left Column: Upload & Live Preview -->
     <section class="upload-section" id="upload">
-      <div class="card upload-card">
+      <div class="card upload-card card-3d-base">
         <div class="card-header">
           <h2>Share a New Sketch</h2>
           {% if user.is_authenticated %}
@@ -73,13 +108,15 @@
         <form id="sketchForm" class="sketch-form" method="POST" action="{% url 'upload_sketch' %}" enctype="multipart/form-data">
           {% csrf_token %}
 
-          <!-- Dropzone / File Picker -->
-          <div class="dropzone" id="dropzone">
+          <!-- Dropzone / File Picker with 3D Feedback -->
+          <div class="dropzone dropzone-3d" id="dropzone">
             <input type="file" id="fileInput" name="image" accept="image/*" class="file-input" required>
             <div class="dropzone-content" id="dropzonePrompt">
-              <div class="upload-icon">🎨</div>
+              <div class="upload-icon-3d">
+                <span class="icon-cube">🎨</span>
+              </div>
               <p class="dropzone-title">Click to choose image or drag & drop</p>
-              <span class="dropzone-subtitle">PNG, JPG, WEBP, or GIF</span>
+              <span class="dropzone-subtitle">PNG, JPG, WEBP, or GIF (Up to 10MB)</span>
             </div>
             <div class="preview-container hidden" id="previewContainer">
               <img id="imagePreview" alt="Sketch Preview" class="preview-image">
@@ -122,7 +159,7 @@
           </div>
 
           {% if user.is_authenticated %}
-            <button type="submit" class="btn btn-primary btn-block">
+            <button type="submit" class="btn btn-primary btn-block btn-3d-pulse">
               <span>Publish to Gallery</span>
               <span class="btn-arrow">→</span>
             </button>
@@ -138,22 +175,50 @@
       <div class="gallery-header">
         <div>
           <h2>Community Gallery</h2>
-          <p class="text-muted">Saved in SQLite &bull; Persists on reload</p>
+          <p class="text-muted">Interactive 3D Cards &bull; Real-time Filter</p>
         </div>
-        <div class="filter-pills">
-          <button class="pill active">All ({{ artworks|length }})</button>
+        
+        <!-- Live Search Input -->
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="sketchSearchInput" placeholder="Search sketch or artist..." autocomplete="off">
         </div>
       </div>
 
+      <!-- Live Medium Filter Pills -->
+      <div class="filter-pills-row" id="filterPillsRow">
+        <button class="pill active" data-filter="all">All ({{ artworks|length }})</button>
+        <button class="pill" data-filter="Anime & Manga">Anime & Manga</button>
+        <button class="pill" data-filter="Pencil & Graphite">Pencil</button>
+        <button class="pill" data-filter="Charcoal">Charcoal</button>
+        <button class="pill" data-filter="Ink & Line Art">Ink</button>
+        <button class="pill" data-filter="Digital Sketch">Digital</button>
+        <button class="pill" data-filter="Concept Art">Concept Art</button>
+      </div>
+
+      <!-- 3D Perspective Gallery Grid -->
       <div class="gallery-grid" id="galleryGrid">
         {% for art in artworks %}
-          <article class="artwork-card" id="art-{{ art.id }}">
-            <div class="artwork-media">
-              <img src="{{ art.image.url }}" alt="{{ art.title }}">
+          <article class="artwork-card card-3d-tilt" 
+                   id="art-{{ art.id }}" 
+                   data-tilt
+                   data-category="{{ art.category }}" 
+                   data-title="{{ art.title|lower }}" 
+                   data-artist="{{ art.artist_name|lower }}">
+            
+            <!-- Dynamic Specular Glare/Sheen Layer -->
+            <div class="card-glare" aria-hidden="true"></div>
+
+            <div class="artwork-media layer-3d-media" title="Click to inspect sketch in 3D Lightbox">
+              <img src="{{ art.image.url }}" alt="{{ art.title }}" class="inspectable-image" data-full="{{ art.image.url }}">
+              <div class="media-inspect-hint">
+                <span>🔍 Inspect &amp; Zoom</span>
+              </div>
             </div>
-            <div class="artwork-details">
+
+            <div class="artwork-details layer-3d-content">
               <div>
-                <div class="artwork-meta">
+                <div class="artwork-meta layer-3d-top">
                   {% if art.user %}
                     <a href="{% url 'profile' art.user.username %}" class="artist-tag artist-link">
                       <span class="artist-avatar">{{ art.user.username|first|upper }}</span>
@@ -162,12 +227,12 @@
                   {% else %}
                     <span class="artist-tag"><strong>{{ art.artist_name }}</strong></span>
                   {% endif %}
-                  <span class="category-chip">{{ art.category }}</span>
+                  <span class="category-chip layer-3d-chip">{{ art.category }}</span>
                 </div>
                 <h3 class="artwork-title">{{ art.title }}</h3>
                 <p class="artwork-notes">"{{ art.notes }}"</p>
 
-                <div class="critique-box {% if art.ai_powered %}critique-box-ai{% endif %}">
+                <div class="critique-box layer-3d-critique {% if art.ai_powered %}critique-box-ai{% endif %}">
                   <div class="critique-header">
                     <div class="critique-rating">
                       <span>★</span>
@@ -201,7 +266,7 @@
                 {% endwith %}
               </div>
 
-              <div class="artwork-actions">
+              <div class="artwork-actions layer-3d-actions">
                 <button class="btn-like" data-id="{{ art.id }}">
                   <span class="like-icon">♥</span>
                   <span class="like-count">{{ art.likes }}</span> Likes
@@ -225,11 +290,35 @@
 
   </main>
 
+  <!-- Fullscreen 3D Lightbox & Sketch Inspector Modal -->
+  <div class="lightbox-modal hidden" id="lightboxModal" aria-hidden="true">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-container">
+      <div class="lightbox-toolbar">
+        <div class="lightbox-info">
+          <span class="lightbox-title" id="lightboxTitle">Sketch Inspection</span>
+        </div>
+        <div class="lightbox-controls">
+          <button type="button" class="btn-lightbox-ctrl" id="zoomOutBtn" title="Zoom Out">-</button>
+          <span class="zoom-level-text" id="zoomLevelText">100%</span>
+          <button type="button" class="btn-lightbox-ctrl" id="zoomInBtn" title="Zoom In">+</button>
+          <button type="button" class="btn-lightbox-ctrl" id="resetZoomBtn" title="Reset">1:1</button>
+          <button type="button" class="btn-lightbox-close" id="lightboxCloseBtn" title="Close">✕</button>
+        </div>
+      </div>
+      <div class="lightbox-viewport" id="lightboxViewport">
+        <div class="lightbox-stage" id="lightboxStage">
+          <img src="" alt="Sketch Inspection View" id="lightboxImage" class="lightbox-img">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-content">
-      <p><strong>Articrare</strong> &bull; Milestone 3: User Authentication & Artist Profiles</p>
-      <p class="text-muted">Your sketches and critique data are saved in SQLite permanently.</p>
+      <p><strong>Articrare</strong> &bull; Interactive 3D Sketch Studio & Critique Platform</p>
+      <p class="text-muted">Where sketches meet constructive eyes &bull; Powered by Django &amp; Gemini AI</p>
     </div>
   </footer>
 
