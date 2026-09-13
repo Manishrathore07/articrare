@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-3">
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-4">
 </head>
 <body class="studio-dark">
 
@@ -303,6 +303,470 @@
 
   </main>
 
+  <!-- ======================================================== -->
+  <!-- SECTION 1: Interactive AI Vision Scanner & Breakdown    -->
+  <!-- ======================================================== -->
+  <section class="studio-section ai-scanner-section" id="ai-vision">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Neural Vision Intelligence</span>
+        <h2 class="section-title">How Gemini Vision AI Analyzes Every Graphite Stroke</h2>
+        <p class="section-subtitle">
+          Beyond basic filters. Our neural pipeline analyzes raw pixel contrast, cross-hatching density, skeletal anatomical lines, and value ranges in seconds.
+        </p>
+      </div>
+
+      <div class="scanner-interactive-grid">
+        <!-- Interactive Visual Comparison Display -->
+        <div class="scanner-visual-col">
+          <div class="scanner-view-box card-3d-base">
+            <div class="scanner-toolbar">
+              <span class="scanner-status-dot"></span>
+              <span class="scanner-title">Live Vision Analysis Simulator</span>
+              <div class="scanner-toggle-group">
+                <button type="button" class="btn-toggle active" id="btnViewRaw" data-view="raw">Raw Study</button>
+                <button type="button" class="btn-toggle" id="btnViewAi" data-view="ai">AI Heatmap</button>
+              </div>
+            </div>
+
+            <div class="scanner-stage" id="scannerStage" data-mode="raw">
+              <!-- Raw Sketch Image -->
+              <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80" 
+                   alt="Raw Graphite Sketch Study" 
+                   class="scanner-base-img" 
+                   id="scannerBaseImg">
+
+              <!-- AI Neural Heatmap Overlay Layer -->
+              <div class="scanner-heatmap-overlay" id="scannerHeatmap">
+                <!-- SVG Neural Landmark Annotations -->
+                <svg class="scanner-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <!-- Skeletal Flow Line -->
+                  <path d="M 50 15 Q 45 40 52 75 T 48 95" class="svg-neural-path svg-action-line" />
+                  <!-- Anatomical Head Oval -->
+                  <ellipse cx="50" cy="22" rx="14" ry="17" class="svg-neural-landmark" />
+                  <!-- Shoulder Plane -->
+                  <line x1="28" y1="38" x2="72" y2="40" class="svg-neural-axis" />
+                  <!-- Pelvic Landmark -->
+                  <line x1="36" y1="68" x2="64" y2="69" class="svg-neural-axis" />
+                  <!-- Contrast Nodes -->
+                  <circle cx="50" cy="22" r="3" class="svg-neural-node" />
+                  <circle cx="30" cy="38" r="3" class="svg-neural-node" />
+                  <circle cx="70" cy="40" r="3" class="svg-neural-node" />
+                  <circle cx="52" cy="75" r="3" class="svg-neural-node" />
+                </svg>
+
+                <!-- Floating Diagnostic Annotation Badges -->
+                <div class="scanner-tag tag-anatomy" style="top: 18%; left: 66%;">
+                  <span>Head Proportion: 1.0 : 7.2</span>
+                </div>
+                <div class="scanner-tag tag-contrast" style="top: 48%; left: 10%;">
+                  <span>Core Shadow: 8B Tonal Depth</span>
+                </div>
+                <div class="scanner-tag tag-gesture" style="top: 78%; right: 12%;">
+                  <span>Gesture Dynamic: 94% Centered</span>
+                </div>
+              </div>
+
+              <!-- Animated Scan Bar (active in AI mode) -->
+              <div class="scanner-sweep-bar" id="scannerSweepBar"></div>
+            </div>
+
+            <div class="scanner-meta-bar">
+              <div class="scanner-metric">
+                <span class="metric-label">Landmarks Detected</span>
+                <strong class="metric-value">14 Nodes</strong>
+              </div>
+              <div class="scanner-metric">
+                <span class="metric-label">Tonal Range</span>
+                <strong class="metric-value">9-Step Gradient</strong>
+              </div>
+              <div class="scanner-metric">
+                <span class="metric-label">Gesture Balance</span>
+                <strong class="metric-value text-accent">9.4 / 10</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Feature Explanations -->
+        <div class="scanner-info-col">
+          <div class="info-pillar-card">
+            <div class="pillar-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            </div>
+            <div>
+              <h3>1. Skeletal Landmarks &amp; Action Lines</h3>
+              <p class="text-muted">
+                Detects the primary line of action, head-to-body proportion ratios, and perspective foreshortening across limbs to ensure poses have grounded weight.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-pillar-card">
+            <div class="pillar-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0 0 20z"/></svg>
+            </div>
+            <div>
+              <h3>2. 9-Step Tonal Gradient Grading</h3>
+              <p class="text-muted">
+                Evaluates your values from pristine paper white down to 9B deep graphite. Highlights areas where contrast needs deeper mid-tones or crisper highlights.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-pillar-card">
+            <div class="pillar-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            </div>
+            <div>
+              <h3>3. Actionable Growth Directives</h3>
+              <p class="text-muted">
+                Instead of vague compliments, you receive targeted suggestions: where to soften cast shadows, how to reinforce contour hierarchy, and how to balance silhouettes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION 2: Daily Sketch Challenge & Prompt Generator     -->
+  <!-- ======================================================== -->
+  <section class="studio-section daily-challenge-section" id="daily-challenge">
+    <div class="container">
+      <div class="challenge-card card-3d-base">
+        <div class="challenge-header">
+          <div class="challenge-badges">
+            <span class="challenge-badge-category" id="challengeCategoryBadge">Pencil &amp; Graphite</span>
+            <span class="challenge-badge-level" id="challengeLevelBadge">Intermediate Tier</span>
+          </div>
+          <div class="challenge-timer-pill">
+            <span class="pulse-dot"></span>
+            <span>Next Prompt in: <strong id="challengeTimer">07h 34m 18s</strong></span>
+          </div>
+        </div>
+
+        <div class="challenge-body">
+          <div class="challenge-content-col">
+            <span class="challenge-eyebrow">Daily Creative Brief #142</span>
+            <h2 class="challenge-title" id="challengeTitleText">Dynamic Foreshortened Hand Holding a Pocket Watch</h2>
+            <p class="challenge-desc" id="challengeDescText">
+              Focus on finger joint compression, knuckle planes, and elliptical perspective of the circular watch rim. Keep preliminary block-in gestures under 5 minutes before applying shading.
+            </p>
+
+            <div class="challenge-tips-grid">
+              <div class="tip-card">
+                <span class="tip-number">01</span>
+                <span>Block the palm as a solid wedge before detailing fingers.</span>
+              </div>
+              <div class="tip-card">
+                <span class="tip-number">02</span>
+                <span>Check negative space between thumb and index finger.</span>
+              </div>
+              <div class="tip-card">
+                <span class="tip-number">03</span>
+                <span>Reserve pure white highlights for the polished glass face.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="challenge-actions-col">
+            <div class="prompt-roll-box">
+              <p class="roll-hint">Want a different theme?</p>
+              <button type="button" class="btn btn-outline btn-block" id="btnRollPrompt">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>
+                <span>Roll Random Prompt</span>
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-block btn-3d-pulse" id="btnAcceptChallenge">
+              <span>Accept Challenge &amp; Upload</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION 3: Interactive 10-Point Scorecard & Calculator    -->
+  <!-- ======================================================== -->
+  <section class="studio-section rubric-section" id="scoring-rubric">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">The 10-Point Studio Standard</span>
+        <h2 class="section-title">Interactive Critique Rubric &amp; Live Score Calculator</h2>
+        <p class="section-subtitle">
+          Test the grading formula used by both the community and Gemini Vision AI. Adjust each of the four foundational pillars to see the composite assessment change in real time.
+        </p>
+      </div>
+
+      <div class="rubric-calculator-card card-3d-base">
+        <!-- Sliders Column -->
+        <div class="rubric-sliders-col">
+          <!-- Pillar 1 -->
+          <div class="rubric-slider-group">
+            <div class="slider-header">
+              <label for="rangeAnatomy">
+                <strong>1. Anatomy &amp; Proportion</strong>
+                <span class="slider-desc">Skeletal landmarks, weight distribution, silhouette accuracy</span>
+              </label>
+              <span class="slider-value-badge" id="valAnatomy">2.2 / 2.5</span>
+            </div>
+            <input type="range" id="rangeAnatomy" min="0" max="2.5" step="0.1" value="2.2" class="rubric-range-input">
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="rubric-slider-group">
+            <div class="slider-header">
+              <label for="rangeValues">
+                <strong>2. Values &amp; Lighting Depth</strong>
+                <span class="slider-desc">Range from paper highlights to deep 8B darks, core shadows</span>
+              </label>
+              <span class="slider-value-badge" id="valValues">2.3 / 2.5</span>
+            </div>
+            <input type="range" id="rangeValues" min="0" max="2.5" step="0.1" value="2.3" class="rubric-range-input">
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="rubric-slider-group">
+            <div class="slider-header">
+              <label for="rangeLinework">
+                <strong>3. Linework &amp; Stroke Confidence</strong>
+                <span class="slider-desc">Line weight variation, clean tapering, zero hesitation marks</span>
+              </label>
+              <span class="slider-value-badge" id="valLinework">2.1 / 2.5</span>
+            </div>
+            <input type="range" id="rangeLinework" min="0" max="2.5" step="0.1" value="2.1" class="rubric-range-input">
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="rubric-slider-group">
+            <div class="slider-header">
+              <label for="rangeComposition">
+                <strong>4. Composition &amp; Perspective</strong>
+                <span class="slider-desc">Focal hierarchy, spatial convergence, gesture dynamics</span>
+              </label>
+              <span class="slider-value-badge" id="valComposition">2.2 / 2.5</span>
+            </div>
+            <input type="range" id="rangeComposition" min="0" max="2.5" step="0.1" value="2.2" class="rubric-range-input">
+          </div>
+        </div>
+
+        <!-- Composite Score Gauge Display -->
+        <div class="rubric-display-col">
+          <div class="rubric-gauge-box">
+            <span class="gauge-label">Composite Rating</span>
+            <div class="gauge-big-score" id="totalScoreNumber">8.8</div>
+            <span class="gauge-max-score">out of 10.0</span>
+            <div class="gauge-tier-badge" id="scoreTierBadge">✦ Exhibition Masterpiece</div>
+          </div>
+
+          <div class="rubric-verdict-box">
+            <h4>Critique Assessment:</h4>
+            <p class="verdict-text" id="scoreVerdictText">
+              Exceptional anatomical fidelity and confidence. Rich tonal transitions bring palpable weight and 3D depth to the form.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION 4: Artist Growth Protocols & Masterclasses        -->
+  <!-- ======================================================== -->
+  <section class="studio-section protocols-section" id="protocols">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Studio Technical Protocols</span>
+        <h2 class="section-title">Essential Exercises for Classical Draftsmanship</h2>
+        <p class="section-subtitle">
+          Daily exercises curated by master draftsmen to sharpen your muscle memory and build instinctive contour confidence.
+        </p>
+      </div>
+
+      <div class="protocols-grid">
+        <!-- Protocol 1 -->
+        <article class="protocol-card card-3d-tilt" data-tilt>
+          <div class="card-glare" aria-hidden="true"></div>
+          <div class="protocol-number">01</div>
+          <h3 class="protocol-title">Pencil Hardness Dynamics</h3>
+          <p class="protocol-desc">
+            Learn when to transition from 4H construction guidelines to 2B midtones and 8B velvet blacks without burnishing the paper tooth.
+          </p>
+          <ul class="protocol-checklist">
+            <li>Keep a dedicated 6H for skeletal gesture block-ins.</li>
+            <li>Use 4B angled flat lead for broad volumetric shading.</li>
+          </ul>
+          <button type="button" class="btn btn-ghost btn-sm practice-btn" data-practice="Graphite Hardness Study">Practice This →</button>
+        </article>
+
+        <!-- Protocol 2 -->
+        <article class="protocol-card card-3d-tilt" data-tilt>
+          <div class="card-glare" aria-hidden="true"></div>
+          <div class="protocol-number">02</div>
+          <h3 class="protocol-title">30-Second Gesture Quickposes</h3>
+          <p class="protocol-desc">
+            Break free of rigid outlining. Train your arm to capture the rhythm, spine tilt, and weight balance in under 30 fluid seconds.
+          </p>
+          <ul class="protocol-checklist">
+            <li>Draw with your shoulder, not your wrist.</li>
+            <li>Focus purely on the C and S curves of the spine.</li>
+          </ul>
+          <button type="button" class="btn btn-ghost btn-sm practice-btn" data-practice="30-Second Quickpose Study">Practice This →</button>
+        </article>
+
+        <!-- Protocol 3 -->
+        <article class="protocol-card card-3d-tilt" data-tilt>
+          <div class="card-glare" aria-hidden="true"></div>
+          <div class="protocol-number">03</div>
+          <h3 class="protocol-title">Cross-Hatching &amp; Curved Form</h3>
+          <p class="protocol-desc">
+            Wrap contour lines around cylindrical volumes rather than hatching across them flatly. Build density organically without smudging.
+          </p>
+          <ul class="protocol-checklist">
+            <li>Follow the cross-contour latitude lines of the mass.</li>
+            <li>Vary line spacing to suggest light falloff naturally.</li>
+          </ul>
+          <button type="button" class="btn btn-ghost btn-sm practice-btn" data-practice="Cross-Hatching Volume Study">Practice This →</button>
+        </article>
+
+        <!-- Protocol 4 -->
+        <article class="protocol-card card-3d-tilt" data-tilt>
+          <div class="card-glare" aria-hidden="true"></div>
+          <div class="protocol-number">04</div>
+          <h3 class="protocol-title">Ink Line Tapering &amp; Weight</h3>
+          <p class="protocol-desc">
+            Master line weight hierarchy. Use heavy strokes to ground underside cast shadows and whisper-thin lines for light-facing contours.
+          </p>
+          <ul class="protocol-checklist">
+            <li>Thick lines where surfaces contact or cast shadows.</li>
+            <li>Thin, broken lines where bright light washes over edges.</li>
+          </ul>
+          <button type="button" class="btn btn-ghost btn-sm practice-btn" data-practice="Ink Line Hierarchy Study">Practice This →</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION 5: Interactive Frequently Asked Questions (FAQ)  -->
+  <!-- ======================================================== -->
+  <section class="studio-section faq-section" id="faq">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Frequently Asked Questions</span>
+        <h2 class="section-title">Everything You Need to Know</h2>
+        <p class="section-subtitle">
+          Transparent answers about your artwork ownership, community standards, and how our AI scoring works.
+        </p>
+      </div>
+
+      <div class="faq-accordion-list">
+        <!-- Question 1 -->
+        <details class="faq-item" name="faq-group" open>
+          <summary class="faq-question">
+            <span>Do I keep 100% ownership and copyright of all sketches I upload?</span>
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>
+              <strong>Yes, absolutely.</strong> You retain 100% full intellectual property and commercial copyright over all sketches, files, and studies you post. Articrare never claims ownership or sells your artwork to third parties.
+            </p>
+          </div>
+        </details>
+
+        <!-- Question 2 -->
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span>How does Google Gemini Vision AI analyze my sketches?</span>
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>
+              When you upload a sketch, our integration with <code>gemini-1.5-flash</code> directly examines the pixel data of your drawing. It computes anatomical proportions, lighting contrast depth, and linework confidence, then generates an impartial 1-10 rating with key strengths and concrete improvement steps.
+            </p>
+          </div>
+        </details>
+
+        <!-- Question 3 -->
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span>Can I post quick rough sketches or unfinished sketchbook pages?</span>
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>
+              <strong>Yes, that's what Articrare was built for!</strong> Unlike polished portfolio sites that only welcome finished masterworks, Articrare is specifically designed for raw studies, warm-up sketches, and works-in-progress where honest feedback is most helpful.
+            </p>
+          </div>
+        </details>
+
+        <!-- Question 4 -->
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span>Is Articrare completely free to use?</span>
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>
+              Yes, Articrare is 100% free for artists worldwide. You can upload unlimited sketches, inspect artwork in the 3D Lightbox, receive AI vision critiques, and participate in community discussions at no cost.
+            </p>
+          </div>
+        </details>
+
+        <!-- Question 5 -->
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span>How can I share my artwork or critique report with others?</span>
+            <span class="faq-chevron">▾</span>
+          </summary>
+          <div class="faq-answer">
+            <p>
+              Every sketch has a dedicated, shareable URL. You can click the <strong>"Share Link"</strong> button on any artwork card or detail page to copy the direct link to your clipboard with one click.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION 6: High-Impact Studio CTA Banner                 -->
+  <!-- ======================================================== -->
+  <section class="studio-section cta-section">
+    <div class="container">
+      <div class="cta-banner-card card-3d-base">
+        <div class="cta-glow-backdrop" aria-hidden="true"></div>
+        <div class="cta-content">
+          <span class="cta-eyebrow">Level Up Your Craft</span>
+          <h2 class="cta-title">Your sketchbook is waiting. Turn raw studies into finished mastery.</h2>
+          <p class="cta-subtitle">
+            Join artists leveling up their anatomy, shading, and linework with focused community reviews and Gemini Vision AI analysis.
+          </p>
+
+          <div class="cta-actions-row">
+            <a href="#upload" class="btn btn-primary btn-lg btn-3d-pulse" id="btnScrollToUpload">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Upload a Sketch Now</span>
+            </a>
+            <a href="#gallery" class="btn btn-outline btn-lg" id="btnScrollToGallery">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>Explore Community Feed</span>
+            </a>
+            <a href="https://www.instagram.com/manish_rathore._/?hl=en" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              <span>Follow on Instagram</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Fullscreen 3D Lightbox & Sketch Inspector Modal -->
   <div class="lightbox-modal hidden" id="lightboxModal" aria-hidden="true">
     <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
@@ -391,6 +855,6 @@
     </div>
   </footer>
 
-  <script src="{% static 'app.js' %}"></script>
+  <script src="{% static 'app.js' %}?v=3d-4"></script>
 </body>
 </html>

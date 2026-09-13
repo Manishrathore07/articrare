@@ -487,4 +487,304 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* ==========================================================================
+     6. Interactive AI Vision Scanner Simulator (Raw vs. AI Heatmap)
+     ========================================================================== */
+  const btnViewRaw = document.getElementById('btnViewRaw');
+  const btnViewAi = document.getElementById('btnViewAi');
+  const scannerStage = document.getElementById('scannerStage');
+
+  if (btnViewRaw && btnViewAi && scannerStage) {
+    btnViewRaw.addEventListener('click', () => {
+      btnViewRaw.classList.add('active');
+      btnViewAi.classList.remove('active');
+      scannerStage.setAttribute('data-mode', 'raw');
+      showToast('Viewing raw graphite study');
+    });
+
+    btnViewAi.addEventListener('click', () => {
+      btnViewAi.classList.add('active');
+      btnViewRaw.classList.remove('active');
+      scannerStage.setAttribute('data-mode', 'ai');
+      showToast('✦ Neural heatmap & landmark analysis enabled');
+    });
+  }
+
+  /* ==========================================================================
+     7. Daily Sketch Challenge & Dynamic Random Prompt Generator
+     ========================================================================== */
+  const PROMPT_COLLECTION = [
+    {
+      title: "Dynamic Foreshortened Hand Holding a Pocket Watch",
+      category: "Pencil & Graphite",
+      level: "Intermediate Tier",
+      desc: "Focus on finger joint compression, knuckle planes, and elliptical perspective of the circular watch rim. Keep preliminary block-in gestures under 5 minutes before applying shading.",
+      tips: [
+        "Block the palm as a solid wedge before detailing fingers.",
+        "Check negative space between thumb and index finger.",
+        "Reserve pure white highlights for the polished glass face."
+      ]
+    },
+    {
+      title: "Cyberpunk Ronin Silhouette in Pouring Rain",
+      category: "Ink & Line Art",
+      level: "Advanced Tier",
+      desc: "Master high-contrast chiaroscuro with intense black shadows. Use negative white streaks to imply slanted neon raindrops hitting shoulder armor plates.",
+      tips: [
+        "Establish an unmistakable dynamic silhouette first.",
+        "Keep rim lighting sharp along the blade edge.",
+        "Limit hatching to contact shadows and wet fabric creases."
+      ]
+    },
+    {
+      title: "Subsurface Translucency on a Classical Statuary Ear",
+      category: "Charcoal",
+      level: "Intermediate Tier",
+      desc: "Anatomy master study focusing on the helix, anti-helix, and tragus. Capture the soft gradient falloff where light penetrates thin cartilage.",
+      tips: [
+        "Use a kneaded eraser to pull out delicate cartilaginous highlights.",
+        "Differentiate soft cast shadows from sharp contact crevices.",
+        "Avoid black outlines—define edges purely with value contrast."
+      ]
+    },
+    {
+      title: "Angular Concept Mecha Helmet with Visor Reflections",
+      category: "Concept Art",
+      level: "Advanced Tier",
+      desc: "Practice hard-surface drafting: 2-point perspective construction of beveled chins, hexagonal intake vents, and a curved glass visor reflecting a horizon.",
+      tips: [
+        "Use subtle cross-contour lines to show surface taper.",
+        "Contrast matte armor plating against ultra-reflective visor glass.",
+        "Vary line thickness: thick underside lines ground mechanical weight."
+      ]
+    },
+    {
+      title: "Expressive Manga Character with Wind-Swept Hair Dynamics",
+      category: "Anime & Manga",
+      level: "Beginner Tier",
+      desc: "Focus on eye expression, clean tapered eyelash contours, and hair clumps that twist in 3D ribbon-like layers around the skull volume.",
+      tips: [
+        "Draw the skull volume first before layering hair strands.",
+        "Group hair into large primary clumps rather than single lines.",
+        "Taper stroke ends with swift, confident flicks."
+      ]
+    },
+    {
+      title: "Folded Silk Drapery Suspended Over an Asymmetrical Sphere",
+      category: "Pencil & Graphite",
+      level: "Intermediate Tier",
+      desc: "Classical fabric study: observe pipe folds, diaper folds, and spiral tensions as heavy fabric cascades over a spherical mass under directional overhead light.",
+      tips: [
+        "Identify the primary point of tension before drawing folds.",
+        "Keep core shadows soft on curved drapery peaks.",
+        "Deepen drop shadows right under where cloth touches the floor."
+      ]
+    }
+  ];
+
+  let currentPromptIndex = 0;
+  const challengeTitleText = document.getElementById('challengeTitleText');
+  const challengeDescText = document.getElementById('challengeDescText');
+  const challengeCategoryBadge = document.getElementById('challengeCategoryBadge');
+  const challengeLevelBadge = document.getElementById('challengeLevelBadge');
+  const btnRollPrompt = document.getElementById('btnRollPrompt');
+  const btnAcceptChallenge = document.getElementById('btnAcceptChallenge');
+
+  function updateChallengeCard(index) {
+    const p = PROMPT_COLLECTION[index];
+    if (!p) return;
+
+    if (challengeTitleText) challengeTitleText.textContent = p.title;
+    if (challengeDescText) challengeDescText.textContent = p.desc;
+    if (challengeCategoryBadge) challengeCategoryBadge.textContent = p.category;
+    if (challengeLevelBadge) challengeLevelBadge.textContent = p.level;
+
+    // Update tips if container exists
+    const tipCards = document.querySelectorAll('.challenge-tips-grid .tip-card span:last-child');
+    if (tipCards && p.tips) {
+      tipCards.forEach((span, i) => {
+        if (p.tips[i]) span.textContent = p.tips[i];
+      });
+    }
+  }
+
+  if (btnRollPrompt) {
+    btnRollPrompt.addEventListener('click', () => {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * PROMPT_COLLECTION.length);
+      } while (nextIndex === currentPromptIndex && PROMPT_COLLECTION.length > 1);
+
+      currentPromptIndex = nextIndex;
+      updateChallengeCard(currentPromptIndex);
+      showToast('🎲 New sketch prompt rolled!');
+    });
+  }
+
+  if (btnAcceptChallenge) {
+    btnAcceptChallenge.addEventListener('click', () => {
+      const p = PROMPT_COLLECTION[currentPromptIndex];
+      const titleInput = document.getElementById('sketchTitle');
+      const categorySelect = document.getElementById('sketchCategory');
+      const uploadSection = document.getElementById('upload');
+
+      if (titleInput && p) {
+        titleInput.value = `[Challenge] ${p.title}`;
+      }
+      if (categorySelect && p) {
+        // Try to select matching category
+        for (let opt of categorySelect.options) {
+          if (opt.value.toLowerCase().includes(p.category.toLowerCase().slice(0, 4))) {
+            categorySelect.value = opt.value;
+            break;
+          }
+        }
+      }
+
+      if (uploadSection) {
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone) {
+          dropzone.classList.add('dropzone-active');
+          setTimeout(() => dropzone.classList.remove('dropzone-active'), 1500);
+        }
+      }
+
+      showToast('Challenge accepted! Drop your study above.');
+    });
+  }
+
+  // Daily Challenge Countdown Timer
+  const challengeTimer = document.getElementById('challengeTimer');
+  if (challengeTimer) {
+    function updateCountdown() {
+      const now = new Date();
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+      const diff = Math.max(0, endOfDay - now);
+
+      const hours = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+      const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+      const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+
+      challengeTimer.textContent = `${hours}h ${minutes}m ${seconds}s`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  }
+
+  /* ==========================================================================
+     8. Interactive 10-Point Scorecard & Live Calculator
+     ========================================================================== */
+  const rangeAnatomy = document.getElementById('rangeAnatomy');
+  const rangeValues = document.getElementById('rangeValues');
+  const rangeLinework = document.getElementById('rangeLinework');
+  const rangeComposition = document.getElementById('rangeComposition');
+
+  const valAnatomy = document.getElementById('valAnatomy');
+  const valValues = document.getElementById('valValues');
+  const valLinework = document.getElementById('valLinework');
+  const valComposition = document.getElementById('valComposition');
+
+  const totalScoreNumber = document.getElementById('totalScoreNumber');
+  const scoreTierBadge = document.getElementById('scoreTierBadge');
+  const scoreVerdictText = document.getElementById('scoreVerdictText');
+
+  function calculateScore() {
+    if (!rangeAnatomy || !rangeValues || !rangeLinework || !rangeComposition) return;
+
+    const a = parseFloat(rangeAnatomy.value) || 0;
+    const v = parseFloat(rangeValues.value) || 0;
+    const l = parseFloat(rangeLinework.value) || 0;
+    const c = parseFloat(rangeComposition.value) || 0;
+
+    if (valAnatomy) valAnatomy.textContent = `${a.toFixed(1)} / 2.5`;
+    if (valValues) valValues.textContent = `${v.toFixed(1)} / 2.5`;
+    if (valLinework) valLinework.textContent = `${l.toFixed(1)} / 2.5`;
+    if (valComposition) valComposition.textContent = `${c.toFixed(1)} / 2.5`;
+
+    const total = Math.min(10, Math.max(0, a + v + l + c)).toFixed(1);
+    if (totalScoreNumber) totalScoreNumber.textContent = total;
+
+    if (scoreTierBadge && scoreVerdictText) {
+      if (total >= 9.0) {
+        scoreTierBadge.textContent = '✦ Exhibition Masterpiece';
+        scoreTierBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+        scoreTierBadge.style.color = '#34d399';
+        scoreTierBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        scoreVerdictText.textContent = 'Exceptional anatomical fidelity and confidence. Rich tonal transitions bring palpable weight and 3D depth to the form.';
+      } else if (total >= 7.5) {
+        scoreTierBadge.textContent = '★ Studio Grade Study';
+        scoreTierBadge.style.background = 'rgba(56, 189, 248, 0.15)';
+        scoreTierBadge.style.color = '#38bdf8';
+        scoreTierBadge.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+        scoreVerdictText.textContent = 'Solid proportional foundation and confident contour hierarchy. Deepen midtones and ambient occlusion to push it to gallery tier.';
+      } else if (total >= 6.0) {
+        scoreTierBadge.textContent = '▲ Foundation in Progress';
+        scoreTierBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+        scoreTierBadge.style.color = '#fbbf24';
+        scoreTierBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        scoreVerdictText.textContent = 'Grounded gesture and strong silhouette. Clean up secondary scratch lines and pay closer attention to limb foreshortening angles.';
+      } else {
+        scoreTierBadge.textContent = '● Raw Warmup Block-in';
+        scoreTierBadge.style.background = 'rgba(244, 63, 94, 0.15)';
+        scoreTierBadge.style.color = '#fb7185';
+        scoreTierBadge.style.borderColor = 'rgba(244, 63, 94, 0.4)';
+        scoreVerdictText.textContent = 'Energetic initial gesture lines. Spend more time blocking in primary geometric masses with loose shoulder strokes before detailing.';
+      }
+    }
+  }
+
+  [rangeAnatomy, rangeValues, rangeLinework, rangeComposition].forEach(slider => {
+    if (slider) slider.addEventListener('input', calculateScore);
+  });
+
+  /* ==========================================================================
+     9. Growth Protocols "Practice This" Action Handlers
+     ========================================================================== */
+  document.querySelectorAll('.practice-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const practiceTopic = this.getAttribute('data-practice') || 'Technique Study';
+      const titleInput = document.getElementById('sketchTitle');
+      const uploadSection = document.getElementById('upload');
+
+      if (titleInput) {
+        titleInput.value = `[Practice] ${practiceTopic}`;
+      }
+
+      if (uploadSection) {
+        uploadSection.scrollIntoView({ behavior: 'smooth' });
+        const dropzone = document.getElementById('dropzone');
+        if (dropzone) {
+          dropzone.classList.add('dropzone-active');
+          setTimeout(() => dropzone.classList.remove('dropzone-active'), 1500);
+        }
+      }
+
+      showToast(`Selected practice: ${practiceTopic}`);
+    });
+  });
+
+  /* ==========================================================================
+     10. CTA Smooth Scroll Handlers
+     ========================================================================== */
+  const btnScrollToUpload = document.getElementById('btnScrollToUpload');
+  const btnScrollToGallery = document.getElementById('btnScrollToGallery');
+
+  if (btnScrollToUpload) {
+    btnScrollToUpload.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById('upload');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  if (btnScrollToGallery) {
+    btnScrollToGallery.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById('gallery');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
 });
+
