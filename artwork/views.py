@@ -220,3 +220,26 @@ def profile_view(request, username):
         'sketch_count': artworks.count(),
     }
     return render(request, 'profile.html', context)
+
+
+def terms_view(request):
+    """Terms of Service, Community Standards & Copyright info."""
+    return render(request, 'terms.html')
+
+
+def help_view(request):
+    """Help Center, FAQ, and Guide on how Articrare & AI Critique works."""
+    return render(request, 'help.html')
+
+
+def contact_view(request):
+    """Contact Us page with direct message submission and creator links."""
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        messages.success(request, f"Thank you {name}! Your message has been received. We'll reply to {email} shortly.")
+        return redirect('contact')
+    return render(request, 'contact.html')
+

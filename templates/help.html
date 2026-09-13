@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help Center &amp; FAQ — Articrare Studio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body class="studio-dark">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="{% url 'index' %}" style="display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="{% url 'index' %}#gallery" class="nav-link">Gallery</a>
+        <a href="{% url 'help' %}" class="nav-link active">Help</a>
+        <a href="{% url 'terms' %}" class="nav-link">Terms</a>
+        <a href="{% url 'contact' %}" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="btn btn-outline btn-user-pill">
+            <span class="avatar-dot">{{ user.username|first|upper }}</span>
+            <span>{{ user.username }}</span>
+          </a>
+          <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="page-hero-section">
+    <div class="container page-hero-content">
+      <span class="page-eyebrow">Knowledge Base &amp; FAQ</span>
+      <h1 class="page-title">Help Center</h1>
+      <p class="page-subtitle">
+        Everything you need to know about sharing sketches, 3D inspection, and AI vision critique.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ Grid -->
+  <main class="container legal-layout">
+    <div class="card legal-card">
+
+      <div class="faq-group">
+        <div class="faq-item">
+          <h3>✦ How does Articrare's AI Vision Critique work?</h3>
+          <p>
+            When you upload a sketch and select a critique focus (e.g. <em>Anatomy &amp; Proportions</em>, <em>Shading &amp; Contrast</em>, or <em>Linework</em>), Articrare sends your drawing to the <strong>Google Gemini Vision model</strong>. 
+            The AI inspects your actual drawing pixels and produces an objective rating (1–10), highlights specific visual strengths, and offers targeted recommendations for improvement.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>✦ How does the 3D Lightbox &amp; Card Tilt work?</h3>
+          <p>
+            Our cards are built using a native 3D perspective engine. As you move your mouse across any sketch card, it tilts dynamically in 3D space with a moving specular spotlight. 
+            Clicking on any sketch opens the <strong>3D Sketch Inspector</strong> where moving your cursor simulates natural paper lighting tilt to check graphite sheen and line contrast.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>✦ How are Community Average Scores calculated?</h3>
+          <p>
+            Every registered artist can leave a 1–10 star rating alongside a written critique. 
+            Articrare aggregates all community reviews and computes a live, real-time average score displayed prominently on each artwork card.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>✦ Who owns the copyright to my uploaded artwork?</h3>
+          <p>
+            <strong>You do. 100%.</strong> You retain full copyright and ownership of every drawing, study, and sketch you share on Articrare. 
+            We never sell, distribute, or license your images without your consent.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3>✦ How do I get the most useful critique on my sketches?</h3>
+          <p>
+            Be specific in your <strong>Artist Notes</strong>! Mention what tools you used (e.g. 2B pencil, dip pen, digital brush) and specifically where you felt stuck (e.g. <em>"struggled with foreshortening on the left arm"</em> or <em>"unsure if cast shadows are deep enough"</em>). 
+            Peers and Gemini AI will focus their feedback directly on those areas.
+          </p>
+        </div>
+      </div>
+
+      <div class="legal-cta-box" style="margin-top: 2.5rem;">
+        <h3>Still need assistance?</h3>
+        <p class="text-muted">Our team is happy to help with any technical or community inquiries.</p>
+        <a href="{% url 'contact' %}" class="btn btn-primary" style="margin-top: 1rem;">Send a Message &rarr;</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Multi-column Bloomberg-style Footer -->
+  <footer class="footer-global">
+    <div class="container footer-grid">
+      <div class="footer-brand-col">
+        <div class="brand">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </div>
+        <p class="footer-desc">
+          Where sketches meet constructive eyes. Built for passionate artists to share raw studies, receive targeted critiques, and accelerate growth.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="{% url 'index' %}">Gallery Feed</a></li>
+          <li><a href="{% url 'index' %}#upload">Upload Sketch</a></li>
+          <li><a href="{% url 'help' %}">Help Center &amp; FAQ</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal &amp; Rights</h4>
+        <ul>
+          <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'terms' %}#copyright">Copyright &amp; Ownership</a></li>
+          <li><a href="{% url 'terms' %}#privacy">Privacy Policy</a></li>
+          <li><a href="{% url 'terms' %}#community">Community Standards</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Creator</h4>
+        <ul>
+          <li><a href="https://github.com/Manishrathore07" target="_blank" rel="noopener noreferrer">GitHub: @Manishrathore07</a></li>
+          <li><a href="https://instagram.com/manishrathore07" target="_blank" rel="noopener noreferrer">Instagram: @manishrathore07</a></li>
+          <li><span class="text-muted">Designed by Manish Kumar Rathore</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-bar">
+      <p>&copy; 2026 Articrare. All Rights Reserved. Sketches belong to their respective creators.</p>
+      <div class="footer-bottom-links">
+        <a href="{% url 'terms' %}">Terms</a>
+        <span>&bull;</span>
+        <a href="{% url 'terms' %}#privacy">Privacy</a>
+        <span>&bull;</span>
+        <a href="{% url 'contact' %}">Help &amp; Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

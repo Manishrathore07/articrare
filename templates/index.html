@@ -330,11 +330,58 @@
   <!-- Floating Toast Notification System -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <p><strong>Articrare</strong> &bull; Interactive 3D Sketch Studio & Critique Platform</p>
-      <p class="text-muted">Where sketches meet constructive eyes &bull; Powered by Django &amp; Gemini AI</p>
+  <!-- Multi-column Bloomberg-style Global Footer -->
+  <footer class="footer-global">
+    <div class="container footer-grid">
+      <div class="footer-brand-col">
+        <div class="brand">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </div>
+        <p class="footer-desc">
+          Where sketches meet constructive eyes. Built for passionate artists to share raw studies, receive targeted critiques, and accelerate growth.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="{% url 'index' %}">Gallery Feed</a></li>
+          <li><a href="{% url 'index' %}#upload">Upload Sketch</a></li>
+          <li><a href="{% url 'help' %}">Help Center &amp; FAQ</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal &amp; Rights</h4>
+        <ul>
+          <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'terms' %}#copyright">Copyright &amp; Ownership</a></li>
+          <li><a href="{% url 'terms' %}#privacy">Privacy Policy</a></li>
+          <li><a href="{% url 'terms' %}#community">Community Standards</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Creator</h4>
+        <ul>
+          <li><a href="https://github.com/Manishrathore07" target="_blank" rel="noopener noreferrer">GitHub: @Manishrathore07</a></li>
+          <li><a href="https://instagram.com/manishrathore07" target="_blank" rel="noopener noreferrer">Instagram: @manishrathore07</a></li>
+          <li><span class="text-muted">Designed by Manish Kumar Rathore</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-bar">
+      <p>&copy; 2026 Articrare. All Rights Reserved. Sketches belong to their respective creators.</p>
+      <div class="footer-bottom-links">
+        <a href="{% url 'terms' %}">Terms</a>
+        <span>&bull;</span>
+        <a href="{% url 'terms' %}#privacy">Privacy</a>
+        <span>&bull;</span>
+        <a href="{% url 'contact' %}">Help &amp; Contact</a>
+      </div>
     </div>
   </footer>
 

@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — Articrare Studio</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body class="studio-dark">
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="{% url 'index' %}" style="display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="{% url 'index' %}#gallery" class="nav-link">Gallery</a>
+        <a href="{% url 'help' %}" class="nav-link">Help</a>
+        <a href="{% url 'terms' %}" class="nav-link">Terms</a>
+        <a href="{% url 'contact' %}" class="nav-link active">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="btn btn-outline btn-user-pill">
+            <span class="avatar-dot">{{ user.username|first|upper }}</span>
+            <span>{{ user.username }}</span>
+          </a>
+          <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+          <a href="{% url 'register' %}" class="btn btn-primary">Sign Up Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="messages-container">
+      {% for message in messages %}
+        <div class="flash-message flash-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Awwwards-inspired Contact Hero -->
+  <section class="contact-hero-section">
+    <div class="container contact-hero-content">
+      <span class="contact-eyebrow">Get in touch</span>
+      <h1 class="contact-huge-title">CONTACT US</h1>
+      <p class="contact-lead">
+        Articrare is one click away.<br>
+        Have a question about your sketch critique, feature request, artist collaboration, or platform feedback? We're here to help!
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="container contact-layout">
+    
+    <!-- Contact Form Box -->
+    <div class="card contact-form-card">
+      <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Send a Request</h2>
+      <p class="text-muted" style="margin-bottom: 1.5rem;">Fill in your details below and we will get back to you directly.</p>
+
+      <form method="POST" action="{% url 'contact' %}" class="sketch-form">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contactName">Your Name</label>
+            <input type="text" id="contactName" name="name" placeholder="Manish Kumar" required>
+          </div>
+          <div class="form-group">
+            <label for="contactEmail">Email Address</label>
+            <input type="email" id="contactEmail" name="email" placeholder="you@domain.com" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="contactSubject">Subject</label>
+          <select id="contactSubject" name="subject">
+            <option value="General Question">General Inquiry / Feedback</option>
+            <option value="AI Critique Question">AI Vision Critique Question</option>
+            <option value="Feature Request">New Feature Suggestion</option>
+            <option value="Artist Collaboration">Artist Spotlight / Collaboration</option>
+            <option value="Report an Issue">Report a Bug / Issue</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="contactMessage">Your Message</label>
+          <textarea id="contactMessage" name="message" rows="5" placeholder="How can we assist you?" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-3d-pulse">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <span>Send Request</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Creator & Social Connection Hub -->
+    <aside class="contact-info-sidebar">
+      <div class="card info-card">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Direct Connect</h3>
+        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1.5rem;">Connect with the creator and join the community across platforms:</p>
+
+        <div class="social-channels-list">
+          <!-- GitHub Card -->
+          <a href="https://github.com/Manishrathore07" target="_blank" rel="noopener noreferrer" class="social-channel-item">
+            <div class="social-icon-box github-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            </div>
+            <div>
+              <strong>GitHub</strong>
+              <div class="text-muted" style="font-size: 0.8rem;">@Manishrathore07 &bull; Code &amp; Repos</div>
+            </div>
+            <span class="channel-arrow">→</span>
+          </a>
+
+          <!-- Instagram Card -->
+          <a href="https://instagram.com/manishrathore07" target="_blank" rel="noopener noreferrer" class="social-channel-item">
+            <div class="social-icon-box instagram-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </div>
+            <div>
+              <strong>Instagram</strong>
+              <div class="text-muted" style="font-size: 0.8rem;">@manishrathore07 &bull; Sketches &amp; Art</div>
+            </div>
+            <span class="channel-arrow">→</span>
+          </a>
+
+          <!-- Help Center Quick Link -->
+          <a href="{% url 'help' %}" class="social-channel-item">
+            <div class="social-icon-box help-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <strong>Help &amp; FAQ</strong>
+              <div class="text-muted" style="font-size: 0.8rem;">Guides on ratings &amp; AI vision</div>
+            </div>
+            <span class="channel-arrow">→</span>
+          </a>
+
+          <!-- Terms & Copyright -->
+          <a href="{% url 'terms' %}" class="social-channel-item">
+            <div class="social-icon-box terms-icon-box">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <strong>Copyright &amp; Terms</strong>
+              <div class="text-muted" style="font-size: 0.8rem;">100% Artist Rights Reserved</div>
+            </div>
+            <span class="channel-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Multi-column Bloomberg-style Footer -->
+  <footer class="footer-global">
+    <div class="container footer-grid">
+      <div class="footer-brand-col">
+        <div class="brand">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </div>
+        <p class="footer-desc">
+          Where sketches meet constructive eyes. Built for passionate artists to share raw studies, receive targeted critiques, and accelerate growth.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="{% url 'index' %}">Gallery Feed</a></li>
+          <li><a href="{% url 'index' %}#upload">Upload Sketch</a></li>
+          <li><a href="{% url 'help' %}">Help Center &amp; FAQ</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal &amp; Rights</h4>
+        <ul>
+          <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'terms' %}#copyright">Copyright &amp; Ownership</a></li>
+          <li><a href="{% url 'terms' %}#privacy">Privacy Policy</a></li>
+          <li><a href="{% url 'terms' %}#community">Community Standards</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Creator</h4>
+        <ul>
+          <li><a href="https://github.com/Manishrathore07" target="_blank" rel="noopener noreferrer">GitHub: @Manishrathore07</a></li>
+          <li><a href="https://instagram.com/manishrathore07" target="_blank" rel="noopener noreferrer">Instagram: @manishrathore07</a></li>
+          <li><span class="text-muted">Designed by Manish Kumar Rathore</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-bar">
+      <p>&copy; 2026 Articrare. All Rights Reserved. Sketches belong to their respective creators.</p>
+      <div class="footer-bottom-links">
+        <a href="{% url 'terms' %}">Terms</a>
+        <span>&bull;</span>
+        <a href="{% url 'terms' %}#privacy">Privacy</a>
+        <span>&bull;</span>
+        <a href="{% url 'contact' %}">Help &amp; Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
