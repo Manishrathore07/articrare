@@ -413,6 +413,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Floating Toast Notification System
+  const toastContainer = document.getElementById('toastContainer');
+
+  function showToast(message) {
+    if (!toastContainer) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<span>✦</span><span>${message}</span>`;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('toast-exit');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // Share Link Button (1-Click Copy to Clipboard)
+  document.querySelectorAll('.btn-share-link').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const relativeUrl = this.getAttribute('data-url');
+      const fullUrl = window.location.origin + relativeUrl;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(fullUrl).then(() => {
+          showToast('Link copied to clipboard!');
+        }).catch(() => {
+          showToast('Failed to copy link');
+        });
+      } else {
+        showToast('Link copied to clipboard!');
+      }
+    });
+  });
+
+  // Submit button loading feedback
+  const sketchForm = document.getElementById('sketchForm');
+  const submitSketchBtn = document.getElementById('submitSketchBtn');
+
+  if (sketchForm && submitSketchBtn) {
+    sketchForm.addEventListener('submit', () => {
+      submitSketchBtn.classList.add('btn-loading');
+      submitSketchBtn.innerHTML = `
+        <span class="btn-spinner"></span>
+        <span>Analyzing &amp; Publishing...</span>
+      `;
+    });
+  }
+
   // Like button with Django AJAX & CSRF Token
   document.querySelectorAll('.btn-like').forEach(button => {
     button.addEventListener('click', function () {
@@ -432,6 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const countSpan = this.querySelector('.like-count');
         if (countSpan) countSpan.textContent = data.likes;
         this.classList.add('liked');
+        showToast('Liked sketch! ♥');
       })
       .catch(err => console.error('Error liking sketch:', err));
     });

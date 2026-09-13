@@ -1,25 +1,29 @@
-/* Articrare Design System */
+/* Articrare Design System — UI/UX Pro Max Architecture */
 :root {
-  --bg-main: #0a0e17;
-  --bg-card: #131b2e;
-  --bg-card-hover: #18233c;
-  --bg-input: #0e1524;
-  --border-color: #23314d;
-  --border-focus: #6366f1;
-  --text-primary: #f1f5f9;
+  --bg-main: #0b0e17;
+  --bg-card: #121826;
+  --bg-card-hover: #172033;
+  --bg-input: #0a0d14;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: #7c3aed;
+  --text-primary: #ffffff;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --accent-primary: #6366f1;
-  --accent-secondary: #a855f7;
-  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --accent-primary: #7c3aed;
+  --accent-secondary: #8b5cf6;
+  --accent-cta: #0891b2;
+  --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #0891b2 100%);
   --success: #10b981;
   --warning: #f59e0b;
-  --font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body: 'Archivo', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 20px;
-  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
-  --transition-speed: 0.25s ease;
+  --shadow-card: 0 14px 34px -8px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.07);
+  --transition-speed: 0.22s cubic-bezier(0.2, 0, 0.2, 1);
+  --color-ring: #7c3aed;
 }
 
 * {
@@ -28,14 +32,24 @@
   box-sizing: border-box;
 }
 
+*:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: var(--font-family);
+  font-family: var(--font-body);
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .brand, .stat-value, .detail-title, .hero-title {
+  font-family: var(--font-display);
 }
 
 /* Layout Utilities */
@@ -1472,4 +1486,156 @@ textarea {
   transform: translateZ(30px);
   pointer-events: none;
 }
+
+/* ---- UI/UX PRO MAX SVG ICONS & POLISH ---- */
+.svg-icon, .search-icon-svg, .btn-arrow-svg, .like-icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.upload-icon-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-secondary);
+  margin-bottom: 0.75rem;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dropzone-3d:hover .upload-icon-svg {
+  transform: translateY(-4px) scale(1.12);
+  color: #c4b5fd;
+}
+
+.btn-share-link {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.btn-share-link:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: var(--accent-primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+}
+
+.avatar-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* ---- FLOATING TOAST NOTIFICATION SYSTEM ---- */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.35rem;
+  background: rgba(18, 24, 38, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(124, 58, 237, 0.15);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: toast-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast.toast-exit {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Button Loading State on Submit */
+.btn.btn-loading {
+  opacity: 0.8;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.btn.btn-loading .btn-arrow-svg {
+  display: none;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- ACCESSIBILITY: PREFERS-REDUCED-MOTION ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card-3d-tilt {
+    transform: none !important;
+  }
+  .hero-dust-canvas {
+    display: none !important;
+  }
+}
+
 
