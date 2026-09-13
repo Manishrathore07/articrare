@@ -7,7 +7,7 @@
   <title>{{ artwork.title }} — Articrare</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-3">
 </head>
 <body>
 
@@ -220,9 +220,64 @@
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-content">
-      <p><strong>Articrare</strong> &bull; Milestone 4: Community Ratings & Critiques</p>
+  <!-- Multi-column Bloomberg-style Global Footer -->
+  <footer class="footer-global">
+    <div class="container footer-grid">
+      <div class="footer-brand-col">
+        <div class="brand">
+          <span class="logo-icon">✦</span>
+          <span class="logo-text">Articrare</span>
+        </div>
+        <p class="footer-desc">
+          Where sketches meet constructive eyes. Built for passionate artists to share raw studies, receive targeted critiques, and accelerate growth.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="{% url 'index' %}">Gallery Feed</a></li>
+          <li><a href="{% url 'index' %}#upload">Upload Sketch</a></li>
+          <li><a href="{% url 'help' %}">Help Center &amp; FAQ</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal &amp; Rights</h4>
+        <ul>
+          <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'terms' %}#copyright">Copyright &amp; Ownership</a></li>
+          <li><a href="{% url 'terms' %}#privacy">Privacy Policy</a></li>
+          <li><a href="{% url 'terms' %}#community">Community Standards</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Creator</h4>
+        <div class="creator-social-pills">
+          <a href="https://www.instagram.com/manish_rathore._/?hl=en" target="_blank" rel="noopener noreferrer" class="creator-pill creator-pill-instagram">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            <span>@manish_rathore._</span>
+          </a>
+          <a href="https://github.com/Manishrathore07" target="_blank" rel="noopener noreferrer" class="creator-pill creator-pill-github">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            <span>@Manishrathore07</span>
+          </a>
+          <span class="text-muted" style="font-size:0.8rem; margin-top:0.25rem;">Built by Manish Kumar Rathore</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container footer-bottom-bar">
+      <p>&copy; 2026 Articrare. All Rights Reserved. Sketches belong to their respective creators.</p>
+      <div class="footer-bottom-links">
+        <a href="{% url 'terms' %}">Terms</a>
+        <span>&bull;</span>
+        <a href="{% url 'terms' %}#privacy">Privacy</a>
+        <span>&bull;</span>
+        <a href="{% url 'contact' %}">Help &amp; Contact</a>
+      </div>
     </div>
   </footer>
 

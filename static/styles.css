@@ -1635,28 +1635,42 @@ textarea {
   }
   .hero-dust-canvas {
     display: none !important;
+  }
 }
 
-/* ---- BLOOMBERG-STYLE GLOBAL MULTI-COLUMN FOOTER ---- */
+/* ---- MOTION.DEV & BLOOMBERG LUXURY FOOTER ---- */
 .footer-global {
   margin-top: auto;
-  background: #070a10;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 4.5rem 0 2rem;
+  position: relative;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124, 58, 237, 0.14) 0%, transparent 70%), #050810;
+  border-top: 1px solid rgba(124, 58, 237, 0.25);
+  padding: 5rem 0 2.5rem;
   font-size: 0.9rem;
+  overflow: hidden;
+}
+
+.footer-global::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.8), rgba(8, 145, 178, 0.8), transparent);
+  filter: blur(0.5px);
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.2fr;
-  gap: 3rem;
-  margin-bottom: 3.5rem;
+  grid-template-columns: 1.8fr 1fr 1fr 1.3fr;
+  gap: 3.5rem;
+  margin-bottom: 4rem;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 2.5rem;
   }
 }
 
@@ -1668,7 +1682,8 @@ textarea {
 }
 
 .footer-brand-col .brand {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  display: inline-flex;
 }
 
 .footer-desc {
