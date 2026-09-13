@@ -1,8 +1,8 @@
 {
   "name": "articrare",
-  "version": "1.0.0",
-  "description": "<p align=\"center\">   <img src=\"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1200&auto=format&fit=crop&q=80\" alt=\"Articrare Banner\" width=\"100%\" style=\"border-radius: 12px; max-height: 380px; object-fit: cover;\" /> </p>",
-  "main": "app.js",
+  "version": "1.1.0",
+  "description": "Where sketches meet constructive eyes — An interactive AI-powered platform for sketch artists to share raw studies, receive targeted critiques, and get automated vision analysis.",
+  "main": "static/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,9 +10,17 @@
     "type": "git",
     "url": "git+https://github.com/Manishrathore07/articrare.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "django",
+    "sketch",
+    "art-critique",
+    "gemini-vision-ai",
+    "motion",
+    "portfolio",
+    "python"
+  ],
+  "author": "Manish Kumar Rathore <https://github.com/Manishrathore07>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Manishrathore07/articrare/issues"
   },

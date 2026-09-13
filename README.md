@@ -13,7 +13,8 @@
   <img src="https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django" />
   <img src="https://img.shields.io/badge/Google_Gemini-Vision_AI-8E75C2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini Vision" />
-  <img src="https://img.shields.io/badge/SQLite_%2F_PostgreSQL-Database-003B57?style=for-the-badge&logo=postgresql&logoColor=white" alt="Database" />
+  <img src="https://img.shields.io/badge/Motion-3D_Visuals-FF4154?style=for-the-badge&logo=framer&logoColor=white" alt="Motion" />
+  <img src="https://img.shields.io/badge/UI%2FUX-Pro_Max-6366F1?style=for-the-badge&logo=awwwards&logoColor=white" alt="UI/UX Pro Max" />
   <img src="https://img.shields.io/badge/Railway-Deploy_Ready-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Railway" />
 </p>
 
@@ -21,28 +22,39 @@
 
 ## 🌟 Features
 
-### 🎨 1. Instant Sketch Upload & Live Preview
+### 🌌 1. 3D Motion Engine & Dark Studio Aesthetic
+- **Charcoal & Ink Particle Physics (`#artDustCanvas`)**: Interactive HTML5 canvas simulating dynamic ambient dust and drawing pigments floating through the hero section.
+- **Perspective Card Tilt & Specular Sheen**: Cards dynamically compute mouse vectors to calculate 3D spatial rotation (`rotateX`, `rotateY`) and smooth lighting sheen.
+- **Fullscreen 3D Lightbox & Paper Inspector**: Inspect fine graphite hatchings and ink lines in a full-bleed modal with paper-like perspective tilt simulation.
+- **Bloomberg / Motion.dev Luxury Footer**: Multi-column responsive footer with glassmorphic author pills, quick links, and terms.
+
+### 🎨 2. Instant Sketch Upload & Live Preview
 - Choose or drag-and-drop raw sketches (PNG, JPG, WEBP).
 - Client-side image preview using HTML5 `FileReader` API before publishing.
 - Tag artwork by medium (Pencil & Graphite, Charcoal, Ink & Line Art, Anime/Manga, Concept Art) and critique focus area.
 
-### 🤖 2. Gemini AI Vision Critique
+### 🤖 3. Gemini AI Vision Critique
 - Integrated with **Google Gemini Vision** (`gemini-1.5-flash`).
 - The AI analyzes the actual visual pixels of the uploaded sketch.
 - Delivers an intelligent **Rating (1-10)**, notes **Key Strengths** (e.g. gesture grounding, contour control), and gives targeted **Actionable Suggestions** (e.g. value depth, limb proportions).
 - Intelligent fallback mode ensures the app runs smoothly even before API keys are configured.
 
-### 👥 3. Community Feedback & 10-Star Ratings
+### 👥 4. Community Feedback & 10-Star Ratings
 - Dedicated critique feed for each artwork (`/sketch/<id>/`).
 - Interactive **10-star rating picker** with real-time preview and community score averaging.
 - Constructive critique comment system where fellow artists discuss techniques, brushstrokes, and improvements.
 
-### 👤 4. Artist Profiles & Portfolio Hub
+### 👤 5. Artist Profiles & Portfolio Hub
 - Comprehensive artist profile page (`/profile/<username>/`).
 - Displays artist statistics: total uploaded sketches, cumulative likes, and community average rating.
 - Dedicated gallery showcasing each artist's individual progression over time.
 
-### ⚡ 5. Production & Cloud Ready
+### 📜 6. Dedicated Information Architecture
+- **Contact Us (`/contact/`)**: Awwwards-inspired interaction hub with direct request form and creator connect cards.
+- **Terms & Copyright (`/terms/`)**: 100% Artist Copyright and Ownership retention policy and AI privacy standards.
+- **Help Center & FAQ (`/help/`)**: Complete guide explaining Gemini AI vision analysis, star criteria, and constructive feedback standards.
+
+### ⚡ 7. Production & Cloud Ready
 - **WhiteNoise** for ultra-fast static file serving without external CDN dependencies.
 - Automatic database switching: lightweight **SQLite** for local development, robust **PostgreSQL** in production.
 - Pre-configured `Procfile`, `railway.toml`, and `.env` support.
@@ -174,14 +186,17 @@ articrare/
 │   ├── urls.py                 # Root URL configuration
 │   └── wsgi.py                 # Production WSGI entrypoint
 ├── templates/                  # Django HTML templates
-│   ├── index.html              # Main feed & upload interface
+│   ├── index.html              # Main feed, 3D particle hero & upload
 │   ├── sketch_detail.html      # Individual critique & rating page
 │   ├── profile.html            # Artist portfolio & stats
+│   ├── contact.html            # Awwwards-inspired Contact Us hub
+│   ├── terms.html              # Terms & 100% Artist Copyright policy
+│   ├── help.html               # Help Center & AI Vision FAQ
 │   ├── login.html              # Artist login portal
 │   └── register.html           # New artist registration
 ├── static/                     # Design system assets
-│   ├── styles.css              # Dark-mode artist studio CSS
-│   └── app.js                  # Dynamic client-side interactivity
+│   ├── styles.css              # Dark-mode studio CSS & 3D tilt engine
+│   └── app.js                  # Particle canvas, tilt & lightbox engine
 ├── media/                      # Uploaded artwork storage (local)
 ├── requirements.txt            # Python dependencies
 ├── Procfile                    # Railway / Heroku production command
@@ -199,7 +214,8 @@ articrare/
 - [x] **Milestone 4**: Interactive 10-Star Ratings & Written Critiques
 - [x] **Milestone 5**: Google Gemini Vision AI Art Critique
 - [x] **Milestone 6**: Production Architecture & Deployment Packaging
-- [ ] **Milestone 7**: Community Leaderboards & Weekly Sketch Prompts
+- [x] **Milestone 7**: 3D Motion Canvas, Card Tilt & Bloomberg-Style Layered Pages
+- [ ] **Milestone 8**: Community Leaderboards & Weekly Sketch Prompts
 
 ---
 
@@ -207,6 +223,7 @@ articrare/
 
 **Manish Kumar Rathore**
 - GitHub: [@Manishrathore07](https://github.com/Manishrathore07)
+- Instagram: [@manish_rathore._](https://www.instagram.com/manish_rathore._/?hl=en)
 - Email: manishkumarrathore0711@gmail.com
 
 ---
