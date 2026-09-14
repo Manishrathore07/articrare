@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-4">
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-5">
 </head>
 <body class="studio-dark">
 
@@ -55,6 +55,13 @@
 
   <!-- 3D Hero & Generative Canvas Section -->
   <section class="hero-section hero-3d">
+    <!-- Jitter Gradients Haze Ambient Backdrop -->
+    <div class="gradients-haze-backdrop" aria-hidden="true">
+      <div class="haze-blob haze-blob-indigo"></div>
+      <div class="haze-blob haze-blob-cyan"></div>
+      <div class="haze-blob haze-blob-rose"></div>
+    </div>
+
     <!-- Interactive 3D Charcoal & Ink Particle Canvas -->
     <canvas id="artDustCanvas" class="hero-dust-canvas"></canvas>
     
@@ -69,7 +76,7 @@
         <span class="pulse-dot"></span>
         <span>Interactive Sketch Studio</span>
       </div>
-      <h1 class="hero-title">
+      <h1 class="hero-title motion-blur-text">
         Where sketches meet <span class="gradient-text gradient-glow">constructive eyes</span>.
       </h1>
       <p class="hero-subtitle">
@@ -167,7 +174,7 @@
           </div>
 
           {% if user.is_authenticated %}
-            <button type="submit" class="btn btn-primary btn-block btn-3d-pulse" id="submitSketchBtn">
+            <button type="submit" class="btn btn-primary btn-block btn-3d-pulse btn-trace" id="submitSketchBtn">
               <span class="btn-text">Publish to Gallery</span>
               <svg class="btn-arrow-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
@@ -186,10 +193,15 @@
           <p class="text-muted">Interactive 3D Cards &bull; Real-time Filter</p>
         </div>
         
-        <!-- Live Search Input -->
-        <div class="search-box">
+        <!-- Jitter Animated Search Bar with Focus Beam Glow & Keyboard Shortcut -->
+        <div class="search-box search-box-animated" id="searchBoxWrapper">
+          <div class="search-beam-glow" aria-hidden="true"></div>
           <svg class="search-icon-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="sketchSearchInput" placeholder="Search sketch or artist..." autocomplete="off">
+          <input type="text" id="sketchSearchInput" placeholder="Search sketches, artists, mediums..." autocomplete="off">
+          <button type="button" class="btn-search-clear hidden" id="searchClearBtn" title="Clear search">✕</button>
+          <div class="search-kbd-pill" title="Global search shortcut">
+            <kbd>Ctrl</kbd>+<kbd>K</kbd>
+          </div>
         </div>
       </div>
 
@@ -480,7 +492,7 @@
               </button>
             </div>
 
-            <button type="button" class="btn btn-primary btn-block btn-3d-pulse" id="btnAcceptChallenge">
+            <button type="button" class="btn btn-primary btn-block btn-3d-pulse btn-trace" id="btnAcceptChallenge">
               <span>Accept Challenge &amp; Upload</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
@@ -749,7 +761,7 @@
           </p>
 
           <div class="cta-actions-row">
-            <a href="#upload" class="btn btn-primary btn-lg btn-3d-pulse" id="btnScrollToUpload">
+            <a href="#upload" class="btn btn-primary btn-lg btn-3d-pulse btn-trace" id="btnScrollToUpload">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               <span>Upload a Sketch Now</span>
             </a>
@@ -853,8 +865,39 @@
         <a href="{% url 'contact' %}">Help &amp; Contact</a>
       </div>
     </div>
-  </footer>
+  <!-- ======================================================== -->
+  <!-- Jitter Floating Action Menu / Spring Dock               -->
+  <!-- ======================================================== -->
+  <aside class="fab-dock" id="floatingActionDock" aria-label="Studio Quick Actions">
+    <div class="fab-menu" id="fabMenu" aria-hidden="true">
+      <button type="button" class="fab-item" id="fabActionUpload" data-tooltip="Upload Study">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span class="fab-label">Upload Study</span>
+      </button>
+      <button type="button" class="fab-item" id="fabActionRoll" data-tooltip="Roll Random Prompt">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>
+        <span class="fab-label">Roll Prompt</span>
+      </button>
+      <button type="button" class="fab-item" id="fabActionSearch" data-tooltip="Search (Ctrl+K)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="fab-label">Search Gallery</span>
+      </button>
+      <button type="button" class="fab-item" id="fabActionScorecard" data-tooltip="Score Calculator">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="fab-label">Scorecard</span>
+      </button>
+      <button type="button" class="fab-item" id="fabActionTop" data-tooltip="Back to Top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        <span class="fab-label">Back to Top</span>
+      </button>
+    </div>
 
-  <script src="{% static 'app.js' %}?v=3d-4"></script>
+    <button type="button" class="fab-trigger btn-3d-pulse" id="fabTriggerBtn" aria-expanded="false" title="Studio Quick Actions">
+      <span class="fab-badge" id="fabBadgeCount">{{ artworks|length }}</span>
+      <span class="fab-icon-symbol">✦</span>
+    </button>
+  </aside>
+
+  <script src="{% static 'app.js' %}?v=3d-5"></script>
 </body>
 </html>

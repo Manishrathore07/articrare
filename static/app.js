@@ -250,12 +250,99 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const searchClearBtn = document.getElementById('searchClearBtn');
+
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
       currentQuery = e.target.value.trim().toLowerCase();
       applyFilters();
+
+      if (searchClearBtn) {
+        if (currentQuery.length > 0) {
+          searchClearBtn.classList.remove('hidden');
+        } else {
+          searchClearBtn.classList.add('hidden');
+        }
+      }
+    });
+
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentQuery = '';
+        applyFilters();
+        searchClearBtn.classList.add('hidden');
+        searchInput.focus();
+        showToast('Search cleared');
+      });
+    }
+
+    // Jitter Typewriter Animated Placeholder
+    const PLACEHOLDER_STRINGS = [
+      "Search 'Zoro anatomy study'...",
+      "Search 'charcoal portraits'...",
+      "Search 'manga linework'...",
+      "Search 'pencil shading'...",
+      "Search 'concept mecha'...",
+      "Search artists & critiques..."
+    ];
+    let placeholderIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typewriterTimer = null;
+
+    function runTypewriter() {
+      if (document.activeElement === searchInput || (searchInput.value && searchInput.value.length > 0)) {
+        typewriterTimer = setTimeout(runTypewriter, 1500);
+        return;
+      }
+
+      const currentString = PLACEHOLDER_STRINGS[placeholderIndex];
+      if (isDeleting) {
+        charIndex--;
+        searchInput.setAttribute('placeholder', currentString.substring(0, charIndex));
+        if (charIndex <= 0) {
+          isDeleting = false;
+          placeholderIndex = (placeholderIndex + 1) % PLACEHOLDER_STRINGS.length;
+          typewriterTimer = setTimeout(runTypewriter, 500);
+          return;
+        }
+        typewriterTimer = setTimeout(runTypewriter, 40);
+      } else {
+        charIndex++;
+        searchInput.setAttribute('placeholder', currentString.substring(0, charIndex));
+        if (charIndex >= currentString.length) {
+          isDeleting = true;
+          typewriterTimer = setTimeout(runTypewriter, 2400);
+          return;
+        }
+        typewriterTimer = setTimeout(runTypewriter, 75);
+      }
+    }
+    typewriterTimer = setTimeout(runTypewriter, 1200);
+
+    searchInput.addEventListener('focus', () => {
+      searchInput.setAttribute('placeholder', 'Search sketches, artists, mediums...');
     });
   }
+
+  // Jitter Animated Search: Global Ctrl+K / Cmd+K Shortcut
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const gallery = document.getElementById('gallery');
+      if (gallery) {
+        gallery.scrollIntoView({ behavior: 'smooth' });
+      }
+      if (searchInput) {
+        setTimeout(() => {
+          searchInput.focus();
+          searchInput.select();
+        }, 300);
+      }
+      showToast('🔍 Search focused (Ctrl+K)');
+    }
+  });
 
   filterPills.forEach(pill => {
     pill.addEventListener('click', () => {
@@ -594,8 +681,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = PROMPT_COLLECTION[index];
     if (!p) return;
 
-    if (challengeTitleText) challengeTitleText.textContent = p.title;
-    if (challengeDescText) challengeDescText.textContent = p.desc;
+    // Jitter Motion Blur Text: Trigger blur entrance on update
+    if (challengeTitleText) {
+      challengeTitleText.classList.remove('motion-blur-active');
+      void challengeTitleText.offsetWidth; // force DOM reflow
+      challengeTitleText.classList.add('motion-blur-active');
+      challengeTitleText.textContent = p.title;
+    }
+    if (challengeDescText) {
+      challengeDescText.classList.remove('motion-blur-active');
+      void challengeDescText.offsetWidth;
+      challengeDescText.classList.add('motion-blur-active');
+      challengeDescText.textContent = p.desc;
+    }
     if (challengeCategoryBadge) challengeCategoryBadge.textContent = p.category;
     if (challengeLevelBadge) challengeLevelBadge.textContent = p.level;
 
@@ -778,13 +876,113 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (btnScrollToGallery) {
-    btnScrollToGallery.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.getElementById('gallery');
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
+  /* ==========================================================================
+     11. Jitter Floating Action Menu / Spring Dock Logic
+     ========================================================================== */
+  const fabDock = document.getElementById('floatingActionDock');
+  const fabTriggerBtn = document.getElementById('fabTriggerBtn');
+  const fabActionUpload = document.getElementById('fabActionUpload');
+  const fabActionRoll = document.getElementById('fabActionRoll');
+  const fabActionSearch = document.getElementById('fabActionSearch');
+  const fabActionScorecard = document.getElementById('fabActionScorecard');
+  const fabActionTop = document.getElementById('fabActionTop');
+
+  if (fabDock && fabTriggerBtn) {
+    function toggleFab(forceState = null) {
+      const isExpanded = forceState !== null ? forceState : !fabDock.classList.contains('active');
+      if (isExpanded) {
+        fabDock.classList.add('active');
+        fabTriggerBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        fabDock.classList.remove('active');
+        fabTriggerBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    fabTriggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFab();
     });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!fabDock.contains(e.target)) {
+        toggleFab(false);
+      }
+    });
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && fabDock.classList.contains('active')) {
+        toggleFab(false);
+      }
+    });
+
+    // Action 1: Upload Study
+    if (fabActionUpload) {
+      fabActionUpload.addEventListener('click', () => {
+        toggleFab(false);
+        const upload = document.getElementById('upload');
+        if (upload) {
+          upload.scrollIntoView({ behavior: 'smooth' });
+          const dropzone = document.getElementById('dropzone');
+          if (dropzone) {
+            dropzone.classList.add('dropzone-active');
+            setTimeout(() => dropzone.classList.remove('dropzone-active'), 1500);
+          }
+        }
+        showToast('Ready to upload your study');
+      });
+    }
+
+    // Action 2: Roll Random Prompt
+    if (fabActionRoll) {
+      fabActionRoll.addEventListener('click', () => {
+        toggleFab(false);
+        if (btnRollPrompt) {
+          btnRollPrompt.click();
+          const challenge = document.getElementById('daily-challenge');
+          if (challenge) challenge.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Action 3: Search Gallery (Ctrl+K)
+    if (fabActionSearch) {
+      fabActionSearch.addEventListener('click', () => {
+        toggleFab(false);
+        const gallery = document.getElementById('gallery');
+        if (gallery) gallery.scrollIntoView({ behavior: 'smooth' });
+        if (searchInput) {
+          setTimeout(() => {
+            searchInput.focus();
+            searchInput.select();
+          }, 350);
+        }
+        showToast('🔍 Search focused (Ctrl+K)');
+      });
+    }
+
+    // Action 4: Live Scorecard
+    if (fabActionScorecard) {
+      fabActionScorecard.addEventListener('click', () => {
+        toggleFab(false);
+        const rubric = document.getElementById('scoring-rubric');
+        if (rubric) rubric.scrollIntoView({ behavior: 'smooth' });
+        showToast('✦ 10-Point Scorecard Calculator');
+      });
+    }
+
+    // Action 5: Back to Top
+    if (fabActionTop) {
+      fabActionTop.addEventListener('click', () => {
+        toggleFab(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showToast('⬆ Back to Top');
+      });
+    }
   }
 
 });
+
 

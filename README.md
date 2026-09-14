@@ -22,7 +22,15 @@
 
 ## 🌟 Features
 
-### 🌌 1. 3D Motion Engine & Dark Studio Aesthetic
+### 🎬 1. Jitter.video Motion Suite & 60fps Micro-Interactions
+- **Gradients Haze Backdrop**: Ethereal, organic 3D ambient color clouds (`hazeDrift1`, `hazeDrift2`, `hazeDrift3`) drifting behind the hero space.
+- **Motion Blur Velocity Text**: Directional velocity blur entrance snapping into crystal clarity on hero headers and random prompt roll updates.
+- **Animated Search Bar**: Expanding search bar with dynamic typewriter placeholder cycling through 6 search queries, laser beam glow, instant clear button, and global `Ctrl+K` / `⌘K` keyboard shortcut.
+- **Laser Trace Interactive Buttons**: Rotating radiant laser beam tracing continuously around button perimeters using CSS `@property --trace-angle` conic gradient.
+- **Floating Action Dock (FAB)**: Bottom-right glassmorphic spring menu with 5 quick artist shortcuts (Upload, Roll Prompt, Search, Scorecard, Back to Top) with a morphing 45° trigger button.
+- **Kinetic Transforming Action Buttons**: State-transforming action buttons with spring burst pulses (`@keyframes likePulseBurst`) and fluid badge count rolls.
+
+### 🌌 2. 3D Motion Engine & Dark Studio Aesthetic
 - **Charcoal & Ink Particle Physics (`#artDustCanvas`)**: Interactive HTML5 canvas simulating dynamic ambient dust and drawing pigments floating through the hero section.
 - **Perspective Card Tilt & Specular Sheen**: Cards dynamically compute mouse vectors to calculate 3D spatial rotation (`rotateX`, `rotateY`) and smooth lighting sheen.
 - **Fullscreen 3D Lightbox & Paper Inspector**: Inspect fine graphite hatchings and ink lines in a full-bleed modal with paper-like perspective tilt simulation.
