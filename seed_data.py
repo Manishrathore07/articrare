@@ -27,7 +27,7 @@ if Artwork.objects.count() == 0:
 
     sample = Artwork(
         title='Zoro — Three Sword Stance Study',
-        artist_name='Manish',
+        artist_name='Articrare Artist',
         category='Anime & Manga',
         focus='Linework & Cleanliness',
         notes='Practicing blade perspective and dynamic folds on the gi. Looking for feedback on weight balance.',

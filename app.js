@@ -14,7 +14,7 @@ const initialArtworks = [
   {
     id: 'art-1',
     title: 'Zoro — Two Sword Stance Sketch',
-    artist: 'Manish',
+    artist: 'Studio Artist',
     category: 'Anime & Manga',
     focus: 'Linework & Cleanliness',
     notes: 'Working on cloth folds and blade perspective. Struggling slightly with the elbow angle.',
@@ -127,7 +127,7 @@ sketchForm.addEventListener('submit', function (e) {
   const newArtwork = {
     id: 'art-' + Date.now(),
     title: title,
-    artist: 'Manish (You)',
+    artist: 'Resident Artist (You)',
     category: category,
     focus: focus,
     notes: notes,

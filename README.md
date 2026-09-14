@@ -256,12 +256,11 @@ articrare/
 
 ---
 
-## 👨‍💻 Author
-
-**Manish Kumar Rathore**
-- GitHub: [@Manishrathore07](https://github.com/Manishrathore07)
-- Instagram: [@manish_rathore._](https://www.instagram.com/manish_rathore._/?hl=en)
-- Email: manishkumarrathore0711@gmail.com
+## 🎨 Studio & Community
+ 
+**Articrare Creative Community**
+- Website: [articrare](http://127.0.0.1:8080)
+- Community: Open study sharing, 10-star critique & Google Gemini Vision AI evaluation.
 
 ---
 

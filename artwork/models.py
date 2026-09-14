@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Artwork(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='artworks')
     title = models.CharField(max_length=200)
-    artist_name = models.CharField(max_length=100, default='Manish')
+    artist_name = models.CharField(max_length=100, default='Articrare Artist')
     category = models.CharField(max_length=100)
     focus = models.CharField(max_length=100)
     notes = models.TextField(blank=True)
