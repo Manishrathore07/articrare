@@ -22,65 +22,75 @@
 
 ## 🌟 Features
 
-### 🎬 1. Jitter.video Motion Suite & 60fps Micro-Interactions
-- **Gradients Haze Backdrop**: Ethereal, organic 3D ambient color clouds (`hazeDrift1`, `hazeDrift2`, `hazeDrift3`) drifting behind the hero space.
+### 🎬 1. Custom 60fps Motion System (Inspired by Jitter & Modern Motion Design)
+- **Ambient Gradients Haze**: Ethereal, organic 3D color clouds (`hazeDrift1`, `hazeDrift2`, `hazeDrift3`) drifting smoothly behind the hero space.
 - **Motion Blur Velocity Text**: Directional velocity blur entrance snapping into crystal clarity on hero headers and random prompt roll updates.
-- **Animated Search Bar**: Expanding search bar with dynamic typewriter placeholder cycling through 6 search queries, laser beam glow, instant clear button, and global `Ctrl+K` / `⌘K` keyboard shortcut.
+- **Animated Expanding Search Bar**: Dynamic typewriter placeholder cycling through 6 drawing search queries, laser beam glow, instant clear button, and global `Ctrl+K` / `⌘K` keyboard shortcut.
 - **Laser Trace Interactive Buttons**: Rotating radiant laser beam tracing continuously around button perimeters using CSS `@property --trace-angle` conic gradient.
-- **Floating Action Dock (FAB)**: Bottom-right glassmorphic spring menu with 5 quick artist shortcuts (Upload, Roll Prompt, Search, Scorecard, Back to Top) with a morphing 45° trigger button.
-- **Kinetic Transforming Action Buttons**: State-transforming action buttons with spring burst pulses (`@keyframes likePulseBurst`) and fluid badge count rolls.
+- **Floating Action Dock (FAB)**: Bottom-right glassmorphic spring menu with 6 quick artist shortcuts (Upload, Roll Prompt, Skill Progress, Search, Scorecard, Back to Top) with a morphing 45° trigger button.
+- **Kinetic Micro-Interactions**: State-transforming action buttons with spring burst pulses (`@keyframes likePulseBurst`) and fluid badge count rolls.
 
-### 🌌 2. 3D Motion Engine & Dark Studio Aesthetic
+### 🌌 2. 3D Perspective & Dark Studio Aesthetic
 - **Charcoal & Ink Particle Physics (`#artDustCanvas`)**: Interactive HTML5 canvas simulating dynamic ambient dust and drawing pigments floating through the hero section.
 - **Perspective Card Tilt & Specular Sheen**: Cards dynamically compute mouse vectors to calculate 3D spatial rotation (`rotateX`, `rotateY`) and smooth lighting sheen.
 - **Fullscreen 3D Lightbox & Paper Inspector**: Inspect fine graphite hatchings and ink lines in a full-bleed modal with paper-like perspective tilt simulation.
 - **Bloomberg / Motion.dev Luxury Footer**: Multi-column responsive footer with glassmorphic author pills, quick links, and terms.
 
-### 🎨 2. Instant Sketch Upload & Live Preview
+### 🎨 3. Instant Sketch Upload & Live Preview
 - Choose or drag-and-drop raw sketches (PNG, JPG, WEBP).
 - Client-side image preview using HTML5 `FileReader` API before publishing.
 - Tag artwork by medium (Pencil & Graphite, Charcoal, Ink & Line Art, Anime/Manga, Concept Art) and critique focus area.
 
-### 🤖 3. Gemini AI Vision Critique
+### 🤖 4. Structured Gemini Vision AI Critique
 - Integrated with **Google Gemini Vision** (`gemini-1.5-flash`).
-- The AI analyzes the actual visual pixels of the uploaded sketch.
-- Delivers an intelligent **Rating (1-10)**, notes **Key Strengths** (e.g. gesture grounding, contour control), and gives targeted **Actionable Suggestions** (e.g. value depth, limb proportions).
+- Gemini Vision evaluates uploaded artwork using a structured artistic critique prompt.
+- Delivers an objective **Rating (1-10)**, identifies **Key Strengths** (e.g. gesture grounding, contour control), and gives targeted **Actionable Suggestions** (e.g. value depth, limb proportions).
 - Intelligent fallback mode ensures the app runs smoothly even before API keys are configured.
 
-### 👥 4. Community Feedback & 10-Star Ratings
-- Dedicated critique feed for each artwork (`/sketch/<id>/`).
-- Interactive **10-star rating picker** with real-time preview and community score averaging.
-- Constructive critique comment system where fellow artists discuss techniques, brushstrokes, and improvements.
+### 📈 5. Artist Skill Progress & Learning Dashboard (New)
+- **Proof of Improvement**: Transforms Articrare from a standard image feed into an AI-assisted art learning platform.
+- **Last 10 Studies Progress Analytics**: Tracks performance gains across 4 core draftsmanship pillars:
+  - *Anatomy & Proportion*: 6.8 ➔ 8.1 (`+1.3` ↑)
+  - *Values & Lighting*: 6.2 ➔ 7.4 (`+1.2` ↑)
+  - *Linework & Confidence*: 7.5 ➔ 8.0 (`+0.5` ↑)
+  - *Composition & Perspective*: 6.9 ➔ 7.7 (`+0.8` ↑)
+- **Personalized AI Diagnostic Growth Focus**: Identifies the artist's specific skill bottleneck (*"Your Current Growth Focus: Values & Lighting"*) and prescribes concrete practice drills.
+- **10-Study Trajectory Timeline**: Chronological milestone tracking with peak score indicators.
 
-### 👤 5. Artist Profiles & Portfolio Hub
-- Comprehensive artist profile page (`/profile/<username>/`).
-- Displays artist statistics: total uploaded sketches, cumulative likes, and community average rating.
-- Dedicated gallery showcasing each artist's individual progression over time.
+### 🔬 6. Grounded AI Vision Analysis Simulator
+- Authentic hand-drawn sketch study demonstrating how Gemini Vision evaluates draftsmanship.
+- SVG diagnostic overlays mapping **cranial proportions**, **eye-line tilt axis**, **jaw angle symmetry**, **neck muscle flow vectors**, and **cross-hatch core shadow density** across 14 detected structural landmarks.
+- 3 technical feature pillars: Head Proportions & Symmetry Alignment, Value Range & Shadow Density, and Line Weight & Stroke Confidence.
 
-### 🔬 6. Interactive AI Vision Scanner Simulator
-- Live before/after toggle comparing **Raw Graphite Studies** against an **AI Neural Heatmap**.
-- Animated sweeping laser bar with SVG neural paths mapping skeletal action lines, cranial proportions, and 8B tonal depth.
-- Real-time diagnostic metrics: landmark count, 9-step gradient scale, and gesture equilibrium score.
-
-### 🎲 7. Daily Sketch Challenge & Dynamic Prompt Generator
-- Real-time countdown timer tracking the next challenge drop.
-- **"🎲 Roll Random Prompt"** button generating tailored drafting themes (e.g. *Foreshortened Hand with Watch*, *Cyberpunk Ronin*, *Classical Statuary Ear*, *Mecha Bevels*).
-- 1-Click **"Accept Challenge"** action that smoothly scrolls up and pre-configures title and medium tags.
+### 🎲 7. Daily Sketch Challenge & Practice-to-Growth Loop
+- **Practice Brief #142**: Time-budgeted daily challenges with difficulty tiers, estimated study times, and specific focus areas.
+- **"🎲 Roll Random Prompt"**: Dynamically randomizes through a curated library of drafting themes (e.g. *Foreshortened Hand*, *Cyberpunk Ronin*, *Classical Statuary Ear*, *Mecha Bevels*).
+- **Practice-to-Growth Benchmark**: Direct before/after comparison showing measurable skill growth between attempts (`Day 98: 6.9/10 ➔ Day 142: 7.8/10 = +0.9 improvement`).
 
 ### 📊 8. Interactive 10-Point Scorecard & Live Calculator
 - 4 interactive range sliders (0 to 2.5 pts each): Anatomy, Values/Lighting, Linework/Confidence, Composition/Perspective.
 - Live calculation engine that computes composite ratings and grade tier badges (*Exhibition Masterpiece*, *Studio Grade Study*, *Foundation in Progress*, *Raw Warmup*).
 
-### 🥋 9. Classical Draftsmanship Growth Protocols
+### 👥 9. Community Feedback & 10-Star Ratings
+- Dedicated critique feed for each artwork (`/sketch/<id>/`).
+- Interactive **10-star rating picker** with real-time preview and community score averaging.
+- Constructive critique comment system where fellow artists discuss techniques, brushstrokes, and improvements.
+
+### 👤 10. Artist Profiles & Portfolio Hub
+- Comprehensive artist profile page (`/profile/<username>/`).
+- Displays artist statistics: total uploaded sketches, cumulative likes, and community average rating.
+- Dedicated gallery showcasing each artist's individual progression over time.
+
+### 🥋 11. Classical Draftsmanship Growth Protocols
 - 4 interactive 3D cards with hover tilt covering Pencil Hardness (9B–6H), 30-Second Quickposes, Curved Cross-Hatching, and Ink Line Hierarchy.
 - Direct "Practice This" buttons that immediately prep the studio for study sessions.
 
-### 📜 10. Dedicated Information Architecture
+### 📜 12. Dedicated Information Architecture
 - **Contact Us (`/contact/`)**: Awwwards-inspired interaction hub with direct request form and creator connect cards.
 - **Terms & Copyright (`/terms/`)**: 100% Artist Copyright and Ownership retention policy and AI privacy standards.
 - **Help Center & FAQ (`/help/` & on-page accordion)**: Complete guide explaining Gemini AI vision analysis, star criteria, and constructive feedback standards.
 
-### ⚡ 11. Production & Cloud Ready
+### ⚡ 13. Production & Cloud Ready
 - **WhiteNoise** for ultra-fast static file serving without external CDN dependencies.
 - Automatic database switching: lightweight **SQLite** for local development, robust **PostgreSQL** in production.
 - Pre-configured `Procfile`, `railway.toml`, and `.env` support.

@@ -593,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnViewAi.classList.add('active');
       btnViewRaw.classList.remove('active');
       scannerStage.setAttribute('data-mode', 'ai');
-      showToast('✦ Neural heatmap & landmark analysis enabled');
+      showToast('✦ Structural landmarks & draftsmanship analysis enabled');
     });
   }
 
@@ -877,12 +877,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     11. Jitter Floating Action Menu / Spring Dock Logic
+     11. Floating Action Menu / Spring Dock Logic (Custom 60fps Motion)
      ========================================================================== */
   const fabDock = document.getElementById('floatingActionDock');
   const fabTriggerBtn = document.getElementById('fabTriggerBtn');
   const fabActionUpload = document.getElementById('fabActionUpload');
   const fabActionRoll = document.getElementById('fabActionRoll');
+  const fabActionProgress = document.getElementById('fabActionProgress');
   const fabActionSearch = document.getElementById('fabActionSearch');
   const fabActionScorecard = document.getElementById('fabActionScorecard');
   const fabActionTop = document.getElementById('fabActionTop');
@@ -947,7 +948,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Action 3: Search Gallery (Ctrl+K)
+    // Action 3: Skill Progress
+    if (fabActionProgress) {
+      fabActionProgress.addEventListener('click', () => {
+        toggleFab(false);
+        const progressSec = document.getElementById('artist-progress');
+        if (progressSec) progressSec.scrollIntoView({ behavior: 'smooth' });
+        showToast('📈 Artist Skill Progress & Analytics');
+      });
+    }
+
+    // Action 4: Search Gallery (Ctrl+K)
     if (fabActionSearch) {
       fabActionSearch.addEventListener('click', () => {
         toggleFab(false);
@@ -963,7 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Action 4: Live Scorecard
+    // Action 5: Live Scorecard
     if (fabActionScorecard) {
       fabActionScorecard.addEventListener('click', () => {
         toggleFab(false);
@@ -973,7 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Action 5: Back to Top
+    // Action 6: Back to Top
     if (fabActionTop) {
       fabActionTop.addEventListener('click', () => {
         toggleFab(false);
@@ -982,6 +993,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+
+  /* ==========================================================================
+     12. Artist Progress Timeline Step Interactions
+     ========================================================================== */
+  const timelineSteps = document.querySelectorAll('.timeline-step');
+  timelineSteps.forEach((step) => {
+    step.addEventListener('click', () => {
+      timelineSteps.forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      const score = step.getAttribute('data-score');
+      const num = step.querySelector('.step-num')?.textContent || '';
+      showToast(`Study ${num}: Score ${score}/10`);
+    });
+  });
 
 });
 

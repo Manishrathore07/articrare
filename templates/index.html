@@ -26,8 +26,12 @@
         <span class="badge badge-3d">Studio 3D</span>
       </div>
       <nav class="nav-links">
-        <a href="#upload" class="nav-link">Upload Sketch</a>
+        <a href="#upload" class="nav-link">Upload</a>
         <a href="#gallery" class="nav-link">Gallery (<span id="galleryCount">{{ artworks|length }}</span>)</a>
+        <a href="#daily-challenge" class="nav-link">Daily Challenge</a>
+        <a href="#artist-progress" class="nav-link">Progress</a>
+        <a href="#ai-vision" class="nav-link">AI Analysis</a>
+        <a href="#scoring-rubric" class="nav-link">Scorecard</a>
       </nav>
       <div class="nav-actions">
         {% if user.is_authenticated %}
@@ -321,10 +325,10 @@
   <section class="studio-section ai-scanner-section" id="ai-vision">
     <div class="container">
       <div class="section-header-center">
-        <span class="section-eyebrow">Neural Vision Intelligence</span>
-        <h2 class="section-title">How Gemini Vision AI Analyzes Every Graphite Stroke</h2>
+        <span class="section-eyebrow">AI Drawing Diagnostics</span>
+        <h2 class="section-title">How Gemini Vision Analyzes Artwork &amp; Draftsmanship</h2>
         <p class="section-subtitle">
-          Beyond basic filters. Our neural pipeline analyzes raw pixel contrast, cross-hatching density, skeletal anatomical lines, and value ranges in seconds.
+          Gemini Vision evaluates uploaded sketches to provide structured critique on proportion, values, linework confidence, and perspective—helping artists turn quick studies into disciplined mastery.
         </p>
       </div>
 
@@ -336,46 +340,75 @@
               <span class="scanner-status-dot"></span>
               <span class="scanner-title">Live Vision Analysis Simulator</span>
               <div class="scanner-toggle-group">
-                <button type="button" class="btn-toggle active" id="btnViewRaw" data-view="raw">Raw Study</button>
-                <button type="button" class="btn-toggle" id="btnViewAi" data-view="ai">AI Heatmap</button>
+                <button type="button" class="btn-toggle active" id="btnViewRaw" data-view="raw">Raw Sketch</button>
+                <button type="button" class="btn-toggle" id="btnViewAi" data-view="ai">AI Analysis Overlay</button>
               </div>
             </div>
 
             <div class="scanner-stage" id="scannerStage" data-mode="raw">
-              <!-- Raw Sketch Image -->
-              <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&auto=format&fit=crop&q=80" 
-                   alt="Raw Graphite Sketch Study" 
+              <!-- Authentic Raw Sketch Image -->
+              <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" 
+                   alt="Hand-Drawn Portrait Study Under AI Analysis" 
                    class="scanner-base-img" 
                    id="scannerBaseImg">
 
-              <!-- AI Neural Heatmap Overlay Layer -->
+              <!-- AI Construction & Landmark Overlay Layer -->
               <div class="scanner-heatmap-overlay" id="scannerHeatmap">
-                <!-- SVG Neural Landmark Annotations -->
+                <!-- SVG Draftsmanship Landmark Annotations -->
                 <svg class="scanner-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <!-- Skeletal Flow Line -->
-                  <path d="M 50 15 Q 45 40 52 75 T 48 95" class="svg-neural-path svg-action-line" />
-                  <!-- Anatomical Head Oval -->
-                  <ellipse cx="50" cy="22" rx="14" ry="17" class="svg-neural-landmark" />
-                  <!-- Shoulder Plane -->
-                  <line x1="28" y1="38" x2="72" y2="40" class="svg-neural-axis" />
-                  <!-- Pelvic Landmark -->
-                  <line x1="36" y1="68" x2="64" y2="69" class="svg-neural-axis" />
-                  <!-- Contrast Nodes -->
-                  <circle cx="50" cy="22" r="3" class="svg-neural-node" />
-                  <circle cx="30" cy="38" r="3" class="svg-neural-node" />
-                  <circle cx="70" cy="40" r="3" class="svg-neural-node" />
-                  <circle cx="52" cy="75" r="3" class="svg-neural-node" />
+                  <!-- Vertical Facial Symmetry & Construction Midline -->
+                  <line x1="49" y1="12" x2="49" y2="88" class="svg-neural-path svg-midline" stroke-dasharray="2 2" />
+                  
+                  <!-- Cranial Circle & Head Proportion -->
+                  <ellipse cx="49" cy="34" rx="24" ry="21" class="svg-neural-landmark svg-cranial" />
+                  
+                  <!-- Facial Thirds & Alignment Planes -->
+                  <line x1="28" y1="26" x2="70" y2="26" class="svg-neural-axis svg-hairline-axis" stroke-dasharray="1 1" />
+                  <line x1="24" y1="34" x2="74" y2="34" class="svg-neural-axis svg-brow-axis" />
+                  <line x1="26" y1="39" x2="72" y2="39" class="svg-neural-axis svg-eye-axis" />
+                  <line x1="38" y1="48" x2="60" y2="48" class="svg-neural-axis svg-nose-axis" />
+                  <line x1="36" y1="55" x2="62" y2="55" class="svg-neural-axis svg-mouth-axis" />
+                  <line x1="40" y1="63" x2="58" y2="63" class="svg-neural-axis svg-chin-axis" />
+                  
+                  <!-- Jaw Contour Angle Vectors -->
+                  <polyline points="23,43 30,57 49,63 68,57 75,43" class="svg-neural-path svg-jaw-contour" />
+                  
+                  <!-- Sternocleidomastoid Neck Muscle Flow Lines -->
+                  <path d="M 32 60 Q 36 74 44 88" class="svg-neural-path svg-muscle-flow" />
+                  <path d="M 66 60 Q 62 74 54 88" class="svg-neural-path svg-muscle-flow" />
+                  
+                  <!-- Core Shadow & Cross-Hatch Density Region -->
+                  <polygon points="34,62 49,64 64,62 58,84 40,84" class="svg-neural-shadow-region" />
+                  
+                  <!-- 14 Structural & Tonal Tracking Nodes -->
+                  <circle cx="49" cy="18" r="1.8" class="svg-neural-node" title="Cranial Apex" />
+                  <circle cx="49" cy="34" r="1.8" class="svg-neural-node" title="Glabella / Brow Center" />
+                  <circle cx="34" cy="39" r="2.2" class="svg-neural-node" title="Right Eye Alignment" />
+                  <circle cx="64" cy="39" r="2.2" class="svg-neural-node" title="Left Eye Alignment" />
+                  <circle cx="23" cy="43" r="1.8" class="svg-neural-node" title="Right Tragus / Ear Anchor" />
+                  <circle cx="75" cy="43" r="1.8" class="svg-neural-node" title="Left Tragus / Ear Anchor" />
+                  <circle cx="49" cy="48" r="1.8" class="svg-neural-node" title="Nose Base Plane" />
+                  <circle cx="30" cy="57" r="2" class="svg-neural-node" title="Right Mandible Angle" />
+                  <circle cx="68" cy="57" r="2" class="svg-neural-node" title="Left Mandible Angle" />
+                  <circle cx="49" cy="63" r="2.2" class="svg-neural-node" title="Chin Landmark" />
+                  <circle cx="32" cy="60" r="1.8" class="svg-neural-node" title="Right Neck Origin" />
+                  <circle cx="66" cy="60" r="1.8" class="svg-neural-node" title="Left Neck Origin" />
+                  <circle cx="44" cy="88" r="1.8" class="svg-neural-node" title="Suprasternal Notch Right" />
+                  <circle cx="54" cy="88" r="1.8" class="svg-neural-node" title="Suprasternal Notch Left" />
                 </svg>
 
                 <!-- Floating Diagnostic Annotation Badges -->
-                <div class="scanner-tag tag-anatomy" style="top: 18%; left: 66%;">
-                  <span>Head Proportion: 1.0 : 7.2</span>
+                <div class="scanner-tag tag-anatomy" style="top: 16%; left: 62%;">
+                  <span>Head Proportion: 1.0 : 3.5</span>
                 </div>
-                <div class="scanner-tag tag-contrast" style="top: 48%; left: 10%;">
-                  <span>Core Shadow: 8B Tonal Depth</span>
+                <div class="scanner-tag tag-contrast" style="top: 36%; left: 8%;">
+                  <span>Eye Alignment: 0.8° Plane</span>
                 </div>
-                <div class="scanner-tag tag-gesture" style="top: 78%; right: 12%;">
-                  <span>Gesture Dynamic: 94% Centered</span>
+                <div class="scanner-tag tag-contrast" style="top: 55%; right: 8%;">
+                  <span>Jaw Angle: 122° Symmetry</span>
+                </div>
+                <div class="scanner-tag tag-gesture" style="top: 72%; left: 14%;">
+                  <span>Core Shadow: Cross-Hatch Density</span>
                 </div>
               </div>
 
@@ -390,11 +423,11 @@
               </div>
               <div class="scanner-metric">
                 <span class="metric-label">Tonal Range</span>
-                <strong class="metric-value">9-Step Gradient</strong>
+                <strong class="metric-value">Paper White → Deep Ink</strong>
               </div>
               <div class="scanner-metric">
-                <span class="metric-label">Gesture Balance</span>
-                <strong class="metric-value text-accent">9.4 / 10</strong>
+                <span class="metric-label">Symmetry Balance</span>
+                <strong class="metric-value text-accent">9.2 / 10</strong>
               </div>
             </div>
           </div>
@@ -407,9 +440,9 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
             </div>
             <div>
-              <h3>1. Skeletal Landmarks &amp; Action Lines</h3>
+              <h3>1. Head Proportions &amp; Symmetry Alignment</h3>
               <p class="text-muted">
-                Detects the primary line of action, head-to-body proportion ratios, and perspective foreshortening across limbs to ensure poses have grounded weight.
+                Evaluates facial thirds, cranial symmetry, horizontal eye tilt, and jawline contours so your portrait and figure sketches feel grounded and structurally balanced.
               </p>
             </div>
           </div>
@@ -419,9 +452,9 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 0 0 20z"/></svg>
             </div>
             <div>
-              <h3>2. 9-Step Tonal Gradient Grading</h3>
+              <h3>2. Value Range &amp; Shadow Density</h3>
               <p class="text-muted">
-                Evaluates your values from pristine paper white down to 9B deep graphite. Highlights areas where contrast needs deeper mid-tones or crisper highlights.
+                Analyzes lighting contrast from untouched paper highlights to deep 8B cross-hatch shadows. Highlights areas where washed-out midtones cause forms to look flat.
               </p>
             </div>
           </div>
@@ -431,9 +464,9 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
             </div>
             <div>
-              <h3>3. Actionable Growth Directives</h3>
+              <h3>3. Line Weight &amp; Stroke Confidence</h3>
               <p class="text-muted">
-                Instead of vague compliments, you receive targeted suggestions: where to soften cast shadows, how to reinforce contour hierarchy, and how to balance silhouettes.
+                Distinguishes between tentative scratch marks and confident, tapered construction strokes. Advises where to thicken contact shadows and soften lit boundaries.
               </p>
             </div>
           </div>
@@ -443,15 +476,18 @@
   </section>
 
   <!-- ======================================================== -->
-  <!-- SECTION 2: Daily Sketch Challenge & Prompt Generator     -->
+  <!-- SECTION 2: Daily Sketch Challenge & Practice-To-Growth   -->
   <!-- ======================================================== -->
   <section class="studio-section daily-challenge-section" id="daily-challenge">
     <div class="container">
       <div class="challenge-card card-3d-base">
         <div class="challenge-header">
           <div class="challenge-badges">
+            <span class="challenge-badge-day">Day 142 • Active Challenge</span>
             <span class="challenge-badge-category" id="challengeCategoryBadge">Pencil &amp; Graphite</span>
             <span class="challenge-badge-level" id="challengeLevelBadge">Intermediate Tier</span>
+            <span class="challenge-badge-time">⏱ 30 Min Study</span>
+            <span class="challenge-badge-focus">Focus: Foreshortening</span>
           </div>
           <div class="challenge-timer-pill">
             <span class="pulse-dot"></span>
@@ -461,7 +497,7 @@
 
         <div class="challenge-body">
           <div class="challenge-content-col">
-            <span class="challenge-eyebrow">Daily Creative Brief #142</span>
+            <span class="challenge-eyebrow">Practice Brief #142</span>
             <h2 class="challenge-title" id="challengeTitleText">Dynamic Foreshortened Hand Holding a Pocket Watch</h2>
             <p class="challenge-desc" id="challengeDescText">
               Focus on finger joint compression, knuckle planes, and elliptical perspective of the circular watch rim. Keep preliminary block-in gestures under 5 minutes before applying shading.
@@ -481,6 +517,41 @@
                 <span>Reserve pure white highlights for the polished glass face.</span>
               </div>
             </div>
+
+            <!-- Complete Practice-To-Growth Benchmark Card -->
+            <div class="challenge-benchmark-banner">
+              <div class="benchmark-header">
+                <div class="benchmark-status">
+                  <span class="benchmark-check-icon">✓</span>
+                  <strong>Study Progression Benchmark: Day 98 vs Today</strong>
+                </div>
+                <span class="benchmark-improvement-badge">+0.9 Improvement (+13%)</span>
+              </div>
+              <div class="benchmark-comparison-grid">
+                <div class="benchmark-col benchmark-prev">
+                  <span class="benchmark-label">Previous Attempt (Day 98)</span>
+                  <div class="benchmark-score-row">
+                    <strong class="benchmark-score">6.9</strong>
+                    <span class="benchmark-max">/ 10</span>
+                  </div>
+                  <p class="benchmark-feedback">"Fingers felt flat; watch rim lacked circular foreshortened tilt."</p>
+                </div>
+                <div class="benchmark-arrow">➔</div>
+                <div class="benchmark-col benchmark-curr">
+                  <span class="benchmark-label">Current Attempt (Day 142)</span>
+                  <div class="benchmark-score-row">
+                    <strong class="benchmark-score text-accent">7.8</strong>
+                    <span class="benchmark-max">/ 10</span>
+                  </div>
+                  <p class="benchmark-feedback">"Crisp knuckle cylinder planes; strong highlight preservation on glass rim."</p>
+                </div>
+              </div>
+              <div class="benchmark-subskills">
+                <span class="subskill-pill">Foreshortening: <strong>+1.2 pts</strong></span>
+                <span class="subskill-pill">Value Contrast: <strong>+0.8 pts</strong></span>
+                <span class="subskill-pill">Line Economy: <strong>+0.7 pts</strong></span>
+              </div>
+            </div>
           </div>
 
           <div class="challenge-actions-col">
@@ -496,6 +567,200 @@
               <span>Accept Challenge &amp; Upload</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- SECTION: Artist Skill Progress & Learning Dashboard      -->
+  <!-- ======================================================== -->
+  <section class="studio-section progress-section" id="artist-progress">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Skill Progression</span>
+        <h2 class="section-title">Artist Skill Progress &amp; Growth Trajectory</h2>
+        <p class="section-subtitle">
+          Proof that your draftsmanship is improving. Aggregated from your last 10 sketch studies, community feedback, and Gemini Vision analyses.
+        </p>
+      </div>
+
+      <!-- Main Progress Grid -->
+      <div class="progress-dashboard-card card-3d-base">
+        <!-- Top Stats Row -->
+        <div class="progress-stats-summary">
+          <div class="summary-metric-card">
+            <span class="summary-metric-label">Studies Analyzed</span>
+            <strong class="summary-metric-val">10 Sketches</strong>
+            <span class="summary-metric-sub">Past 30 Days</span>
+          </div>
+          <div class="summary-metric-card">
+            <span class="summary-metric-label">Composite Baseline</span>
+            <strong class="summary-metric-val">6.85 / 10</strong>
+            <span class="summary-metric-sub">Studies 1 – 3</span>
+          </div>
+          <div class="summary-metric-card">
+            <span class="summary-metric-label">Current Average</span>
+            <strong class="summary-metric-val text-accent">7.80 / 10</strong>
+            <span class="summary-metric-sub">Studies 8 – 10</span>
+          </div>
+          <div class="summary-metric-card highlight-growth">
+            <span class="summary-metric-label">Overall Growth</span>
+            <strong class="summary-metric-val text-positive">+0.95 ↑</strong>
+            <span class="summary-metric-sub">Significant Mastery Surge</span>
+          </div>
+        </div>
+
+        <!-- 4 Core Skills Progress Breakdown -->
+        <div class="skill-cards-grid">
+          <!-- Skill 1: Anatomy -->
+          <div class="skill-progress-card">
+            <div class="skill-header">
+              <div class="skill-meta">
+                <span class="skill-icon">🦴</span>
+                <strong>Anatomy &amp; Proportion</strong>
+              </div>
+              <span class="skill-delta-pill delta-positive">+1.3 ↑</span>
+            </div>
+            <div class="skill-score-row">
+              <span class="skill-prev-val">Previous: <strong>6.8</strong></span>
+              <span class="skill-arrow">➔</span>
+              <span class="skill-curr-val">Current: <strong class="text-accent">8.1</strong> <small>/ 10</small></span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" style="width: 81%;"></div>
+              <div class="skill-bar-ghost" style="width: 68%;"></div>
+            </div>
+            <p class="skill-note">Noticeable leap in facial thirds symmetry and shoulder-pelvis tilt equilibrium.</p>
+          </div>
+
+          <!-- Skill 2: Values -->
+          <div class="skill-progress-card focus-card">
+            <div class="skill-header">
+              <div class="skill-meta">
+                <span class="skill-icon">🌓</span>
+                <strong>Values &amp; Lighting Depth</strong>
+              </div>
+              <span class="skill-delta-pill delta-positive">+1.2 ↑</span>
+            </div>
+            <div class="skill-score-row">
+              <span class="skill-prev-val">Previous: <strong>6.2</strong></span>
+              <span class="skill-arrow">➔</span>
+              <span class="skill-curr-val">Current: <strong class="text-accent">7.4</strong> <small>/ 10</small></span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" style="width: 74%;"></div>
+              <div class="skill-bar-ghost" style="width: 62%;"></div>
+            </div>
+            <p class="skill-note">Improved midtone gradation; deep 8B darks in contact shadows still have room to expand.</p>
+          </div>
+
+          <!-- Skill 3: Linework -->
+          <div class="skill-progress-card">
+            <div class="skill-header">
+              <div class="skill-meta">
+                <span class="skill-icon">🖋️</span>
+                <strong>Linework &amp; Confidence</strong>
+              </div>
+              <span class="skill-delta-pill delta-positive">+0.5 ↑</span>
+            </div>
+            <div class="skill-score-row">
+              <span class="skill-prev-val">Previous: <strong>7.5</strong></span>
+              <span class="skill-arrow">➔</span>
+              <span class="skill-curr-val">Current: <strong class="text-accent">8.0</strong> <small>/ 10</small></span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" style="width: 80%;"></div>
+              <div class="skill-bar-ghost" style="width: 75%;"></div>
+            </div>
+            <p class="skill-note">Clean stroke tapering with fewer hesitation scratches on long gesture lines.</p>
+          </div>
+
+          <!-- Skill 4: Composition -->
+          <div class="skill-progress-card">
+            <div class="skill-header">
+              <div class="skill-meta">
+                <span class="skill-icon">📐</span>
+                <strong>Composition &amp; Perspective</strong>
+              </div>
+              <span class="skill-delta-pill delta-positive">+0.8 ↑</span>
+            </div>
+            <div class="skill-score-row">
+              <span class="skill-prev-val">Previous: <strong>6.9</strong></span>
+              <span class="skill-arrow">➔</span>
+              <span class="skill-curr-val">Current: <strong class="text-accent">7.7</strong> <small>/ 10</small></span>
+            </div>
+            <div class="skill-bar-track">
+              <div class="skill-bar-fill" style="width: 77%;"></div>
+              <div class="skill-bar-ghost" style="width: 69%;"></div>
+            </div>
+            <p class="skill-note">Stronger focal centering and clearer foreshortened overlap across figure studies.</p>
+          </div>
+        </div>
+
+        <!-- AI Diagnostic Bottleneck Callout -->
+        <div class="ai-focus-diagnostic-banner">
+          <div class="diagnostic-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+          </div>
+          <div class="diagnostic-content">
+            <div class="diagnostic-tag">Personalized Growth Diagnosis</div>
+            <h3 class="diagnostic-title">Your Current Growth Focus: Values &amp; Lighting Depth</h3>
+            <p class="diagnostic-desc">
+              Across your last 10 uploaded studies, you consistently score lower in tonal depth (avg. 6.8) than in anatomical structure (avg. 8.1). Your gesture lines and proportions are solid, but forms risk looking flat under uniform lighting.
+            </p>
+            <div class="diagnostic-action-row">
+              <span class="diagnostic-action-tip"><strong>Actionable Directive:</strong> Dedicate your next 2 practice studies to 8B core shadow cross-hatching before adding fine details.</span>
+              <a href="#protocols" class="btn btn-sm btn-outline">Review Shading Protocol →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10-Study History Micro-Timeline -->
+        <div class="study-timeline-bar">
+          <span class="timeline-label">10-Study Trajectory:</span>
+          <div class="timeline-dots-row">
+            <div class="timeline-step" data-score="6.4" title="Study #1: 6.4 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#1</span>
+            </div>
+            <div class="timeline-step" data-score="6.7" title="Study #2: 6.7 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#2</span>
+            </div>
+            <div class="timeline-step" data-score="6.5" title="Study #3: 6.5 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#3</span>
+            </div>
+            <div class="timeline-step" data-score="7.1" title="Study #4: 7.1 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#4</span>
+            </div>
+            <div class="timeline-step" data-score="7.0" title="Study #5: 7.0 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#5</span>
+            </div>
+            <div class="timeline-step" data-score="7.4" title="Study #6: 7.4 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#6</span>
+            </div>
+            <div class="timeline-step" data-score="7.6" title="Study #7: 7.6 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#7</span>
+            </div>
+            <div class="timeline-step" data-score="7.8" title="Study #8: 7.8 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#8</span>
+            </div>
+            <div class="timeline-step" data-score="8.0" title="Study #9: 8.0 / 10">
+              <span class="step-dot"></span>
+              <span class="step-num">#9</span>
+            </div>
+            <div class="timeline-step active" data-score="8.1" title="Study #10: 8.1 / 10 (Current Peak)">
+              <span class="step-dot dot-peak"></span>
+              <span class="step-num">#10 (8.1)</span>
+            </div>
           </div>
         </div>
       </div>
@@ -694,12 +959,12 @@
         <!-- Question 2 -->
         <details class="faq-item" name="faq-group">
           <summary class="faq-question">
-            <span>How does Google Gemini Vision AI analyze my sketches?</span>
+            <span>How does Google Gemini Vision analyze my sketches?</span>
             <span class="faq-chevron">▾</span>
           </summary>
           <div class="faq-answer">
             <p>
-              When you upload a sketch, our integration with <code>gemini-1.5-flash</code> directly examines the pixel data of your drawing. It computes anatomical proportions, lighting contrast depth, and linework confidence, then generates an impartial 1-10 rating with key strengths and concrete improvement steps.
+              When you upload a sketch, our integration with <code>gemini-1.5-flash</code> evaluates your drawing using a structured artistic critique prompt. It analyzes anatomical proportions, lighting value range, and linework confidence, then generates an objective 1-10 rating along with key strengths and concrete improvement steps.
             </p>
           </div>
         </details>
@@ -866,7 +1131,7 @@
       </div>
     </div>
   <!-- ======================================================== -->
-  <!-- Jitter Floating Action Menu / Spring Dock               -->
+  <!-- Floating Action Menu / Custom Spring Dock                -->
   <!-- ======================================================== -->
   <aside class="fab-dock" id="floatingActionDock" aria-label="Studio Quick Actions">
     <div class="fab-menu" id="fabMenu" aria-hidden="true">
@@ -877,6 +1142,10 @@
       <button type="button" class="fab-item" id="fabActionRoll" data-tooltip="Roll Random Prompt">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>
         <span class="fab-label">Roll Prompt</span>
+      </button>
+      <button type="button" class="fab-item" id="fabActionProgress" data-tooltip="Skill Progress">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <span class="fab-label">Skill Progress</span>
       </button>
       <button type="button" class="fab-item" id="fabActionSearch" data-tooltip="Search (Ctrl+K)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
