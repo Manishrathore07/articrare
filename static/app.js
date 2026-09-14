@@ -32,12 +32,21 @@ document.addEventListener('DOMContentLoaded', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Track mouse over hero section
+    // Track mouse and scroll velocity over hero section
     const heroSection = canvas.parentElement;
+    let lastScrollY = window.scrollY;
+    let scrollVelocity = 0;
+
+    window.addEventListener('scroll', () => {
+      const curY = window.scrollY;
+      scrollVelocity = (curY - lastScrollY) * 0.08;
+      lastScrollY = curY;
+    }, { passive: true });
+
     heroSection.addEventListener('mousemove', (e) => {
       const rect = heroSection.getBoundingClientRect();
-      mouse.targetX = (e.clientX - rect.left - rect.width / 2) * 0.0008;
-      mouse.targetY = (e.clientY - rect.top - rect.height / 2) * 0.0008;
+      mouse.targetX = (e.clientX - rect.left - rect.width / 2) * 0.001;
+      mouse.targetY = (e.clientY - rect.top - rect.height / 2) * 0.001;
     });
 
     heroSection.addEventListener('mouseleave', () => {
@@ -52,21 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       reset(init = false) {
-        this.x = (Math.random() - 0.5) * (width || 800) * 1.2;
-        this.y = (Math.random() - 0.5) * (height || 400) * 1.2;
+        this.x = (Math.random() - 0.5) * (width || 800) * 1.3;
+        this.y = (Math.random() - 0.5) * (height || 400) * 1.3;
         this.z = init ? Math.random() * 500 - 250 : 250;
         this.vx = (Math.random() - 0.5) * 0.35;
         this.vy = (Math.random() - 0.5) * 0.35;
-        this.vz = -0.4 - Math.random() * 0.4;
+        this.vz = -0.35 - Math.random() * 0.45;
         this.baseRadius = 1.2 + Math.random() * 2.2;
         // Dual palette: Charcoal graphite dust vs luminous purple ink
         this.isInk = Math.random() > 0.65;
         this.color = this.isInk
-          ? `rgba(168, 85, 247, ${0.4 + Math.random() * 0.4})`
+          ? `rgba(168, 85, 247, ${0.45 + Math.random() * 0.4})`
           : `rgba(203, 213, 225, ${0.25 + Math.random() * 0.35})`;
       }
 
-      update(rotX, rotY) {
+      update(rotX, rotY, velY) {
         // Rotate around Y axis
         let cosY = Math.cos(rotX);
         let sinY = Math.sin(rotX);
@@ -80,10 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let z2 = z1 * cosX + this.y * sinX;
 
         this.x += this.vx;
-        this.y += this.vy;
+        this.y += this.vy - velY * 0.5; // Responds to scroll velocity!
         this.z += this.vz;
 
-        if (this.z < -FOV + 50 || Math.abs(this.x) > width || Math.abs(this.y) > height) {
+        if (this.z < -FOV + 50 || Math.abs(this.x) > width * 0.8 || Math.abs(this.y) > height * 0.8) {
           this.reset(false);
         }
 
@@ -98,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Intersection observer to pause when hero is scrolled out of view
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0].isIntersecting;
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
     observer.observe(heroSection);
 
     let curRotX = 0, curRotY = 0;
@@ -113,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       curRotX += (mouse.targetX - curRotX) * 0.05;
       curRotY += (mouse.targetY - curRotY) * 0.05;
+      scrollVelocity *= 0.94; // Decay scroll velocity smoothly
 
       const cx = width / 2;
       const cy = height / 2;
@@ -121,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Project particles to 2D
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        const pos = p.update(curRotX, curRotY);
+        const pos = p.update(curRotX, curRotY, scrollVelocity);
         const depth = pos.z + FOV;
 
         if (depth > 10) {
@@ -169,17 +179,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ==========================================================================
-     2. 3D Perspective Card Tilt & Spotlight Sheen Engine
+     2. 3D Perspective Card Tilt & Dynamic Specular Sheen Engine
      ========================================================================== */
   const tiltCards = document.querySelectorAll('[data-tilt]');
 
   tiltCards.forEach(card => {
-    let bounds;
+    let bounds = null;
+    const mediaLayer = card.querySelector('.layer-3d-media');
+    const contentLayer = card.querySelector('.layer-3d-content');
 
     function onMouseEnter(e) {
       bounds = card.getBoundingClientRect();
       card.style.setProperty('--glare-opacity', '1');
-      card.style.setProperty('--tilt-scale', '1.018');
     }
 
     function onMouseMove(e) {
@@ -191,21 +202,34 @@ document.addEventListener('DOMContentLoaded', () => {
       const normX = (mouseX / bounds.width) - 0.5;
       const normY = (mouseY / bounds.height) - 0.5;
 
-      // Max 10 deg pitch, 12 deg yaw
-      const tiltX = (normY * -16).toFixed(2);
-      const tiltY = (normX * 18).toFixed(2);
+      // Max 12 deg pitch, 14 deg yaw
+      const tiltX = (normY * -12).toFixed(2);
+      const tiltY = (normX * 14).toFixed(2);
 
-      card.style.setProperty('--tilt-x', `${tiltX}deg`);
-      card.style.setProperty('--tilt-y', `${tiltY}deg`);
+      card.style.transform = `perspective(1200px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.018, 1.018, 1.018)`;
+      card.style.setProperty('--mouse-x', `${mouseX}px`);
+      card.style.setProperty('--mouse-y', `${mouseY}px`);
       card.style.setProperty('--glare-x', `${(mouseX / bounds.width * 100).toFixed(1)}%`);
       card.style.setProperty('--glare-y', `${(mouseY / bounds.height * 100).toFixed(1)}%`);
+
+      // Parallax layer offsets inside card
+      if (mediaLayer) {
+        mediaLayer.style.transform = `translateZ(26px) translateX(${(normX * 6).toFixed(1)}px) translateY(${(normY * 6).toFixed(1)}px)`;
+      }
+      if (contentLayer) {
+        contentLayer.style.transform = `translateZ(14px) translateX(${(normX * 3).toFixed(1)}px) translateY(${(normY * 3).toFixed(1)}px)`;
+      }
     }
 
     function onMouseLeave() {
-      card.style.setProperty('--tilt-x', '0deg');
-      card.style.setProperty('--tilt-y', '0deg');
-      card.style.setProperty('--tilt-scale', '1');
+      card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
       card.style.setProperty('--glare-opacity', '0');
+      if (mediaLayer) {
+        mediaLayer.style.transform = 'translateZ(26px) translateX(0px) translateY(0px)';
+      }
+      if (contentLayer) {
+        contentLayer.style.transform = 'translateZ(14px) translateX(0px) translateY(0px)';
+      }
       bounds = null;
     }
 
@@ -979,6 +1003,285 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(`Study ${num}: Score ${score}/10`);
     });
   });
+
+  /* ==========================================================================
+     13. GSAP & ScrollTrigger 3D Motion Engine & Storytelling
+     ========================================================================== */
+  const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+
+  if (hasGsap) {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  // A. Hero Multi-Layer Parallax
+  if (hasGsap && !hasReducedMotion) {
+    gsap.to('.hero-depth-bg', {
+      yPercent: 18,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+
+    gsap.to('.hero-depth-mid', {
+      yPercent: 32,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+
+    gsap.to('#heroTitle', {
+      y: -35,
+      opacity: 0.6,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    });
+
+    // B. Cinematic Sketchbook Reveal
+    gsap.fromTo('#sketchbookStage', 
+      { scale: 0.85, opacity: 0.35, rotateX: 6 },
+      {
+        scale: 1,
+        opacity: 1,
+        rotateX: 0,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#sketchbook-reveal',
+          start: 'top 85%',
+          end: 'top 35%',
+          scrub: 1.2
+        }
+      }
+    );
+
+    // C. Stacked Physical Showcase Deck Entrance
+    gsap.from('.showcase-sheet', {
+      y: 60,
+      opacity: 0,
+      scale: 0.88,
+      stagger: 0.16,
+      duration: 0.9,
+      ease: 'back.out(1.2)',
+      scrollTrigger: {
+        trigger: '#sketchbook-showcase',
+        start: 'top 75%'
+      }
+    });
+
+    // D. Daily Challenge 3D Entrance
+    gsap.fromTo('#challengeCard',
+      { scale: 0.82, opacity: 0.4 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#daily-challenge',
+          start: 'top 80%'
+        }
+      }
+    );
+  }
+
+  /* ==========================================================================
+     14. Stepwise AI Vision Scanner (Interactive + Scroll-Scrubbed)
+     ========================================================================== */
+  const stepBtns = document.querySelectorAll('.scan-step-btn');
+  const scannerStage = document.getElementById('scannerStage');
+
+  function setScannerStep(step) {
+    stepBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.step === String(step));
+    });
+    if (scannerStage) {
+      scannerStage.setAttribute('data-step', String(step));
+    }
+  }
+
+  stepBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const step = btn.dataset.step;
+      setScannerStep(step);
+      showToast(`AI Vision Analysis: Step 0${step}`);
+    });
+  });
+
+  // Scroll scrub for AI Vision section
+  if (hasGsap && !hasReducedMotion) {
+    ScrollTrigger.create({
+      trigger: '#ai-vision',
+      start: 'top 55%',
+      end: 'bottom 45%',
+      onUpdate: (self) => {
+        const step = Math.min(6, Math.max(1, Math.ceil(self.progress * 6)));
+        setScannerStep(step);
+      }
+    });
+  }
+
+  /* ==========================================================================
+     15. "Improve My Sketch" Reveal & Sequential Directives
+     ========================================================================== */
+  const improveCard = document.getElementById('improveSketchCard');
+  const improveScoreEl = document.getElementById('improveScoreNum');
+  const btnGenerateGuide = document.getElementById('btnGenerateGuide');
+  const stepItems = document.querySelectorAll('.improve-step-item');
+  let improveAnimated = false;
+
+  function runImproveAnimation() {
+    if (improveAnimated) return;
+    improveAnimated = true;
+    if (improveScoreEl) {
+      let cur = 0;
+      const target = 7.4;
+      const timer = setInterval(() => {
+        cur += 0.25;
+        if (cur >= target) {
+          cur = target;
+          clearInterval(timer);
+        }
+        improveScoreEl.textContent = cur.toFixed(1);
+      }, 35);
+    }
+  }
+
+  if (improveCard) {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        runImproveAnimation();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(improveCard);
+  }
+
+  if (btnGenerateGuide) {
+    btnGenerateGuide.addEventListener('click', () => {
+      stepItems.forEach((item, idx) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(18px)';
+        setTimeout(() => {
+          item.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, (idx + 1) * 140);
+      });
+      showToast('✦ 4-Step Improvement Directives Activated');
+    });
+  }
+
+  /* ==========================================================================
+     16. Before vs After Animated Counters & Progress Bars
+     ========================================================================== */
+  const baCard = document.getElementById('beforeAfterCard');
+  let baTriggered = false;
+
+  function runBeforeAfterAnim() {
+    if (baTriggered) return;
+    baTriggered = true;
+    const fills = document.querySelectorAll('.ba-progress-fill');
+    fills.forEach(fill => {
+      const targetWidth = fill.style.width;
+      fill.style.width = '0%';
+      setTimeout(() => {
+        fill.style.width = targetWidth;
+      }, 200);
+    });
+  }
+
+  if (baCard) {
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        runBeforeAfterAnim();
+      }
+    }, { threshold: 0.3 });
+    obs.observe(baCard);
+  }
+
+  /* ==========================================================================
+     17. Interactive 10-Node Artistic Skill Tree
+     ========================================================================== */
+  const treeNodes = document.querySelectorAll('.tree-node');
+  const inspectorName = document.getElementById('inspectorSkillName');
+  const inspectorLevel = document.getElementById('inspectorSkillLevel');
+  const inspectorScore = document.getElementById('inspectorSkillScore');
+  const inspectorDesc = document.getElementById('inspectorSkillDesc');
+
+  treeNodes.forEach(node => {
+    function activateNode() {
+      treeNodes.forEach(n => n.classList.remove('node-active'));
+      node.classList.add('node-active');
+
+      const skill = node.dataset.skill;
+      const score = node.dataset.score;
+      const level = node.dataset.level;
+      const desc = node.dataset.desc;
+
+      if (inspectorName) inspectorName.textContent = skill;
+      if (inspectorLevel) inspectorLevel.textContent = level;
+      if (inspectorScore) inspectorScore.textContent = `${score} / 10`;
+      if (inspectorDesc) inspectorDesc.textContent = desc;
+    }
+
+    node.addEventListener('mouseenter', activateNode);
+    node.addEventListener('click', (e) => {
+      e.preventDefault();
+      activateNode();
+      showToast(`Skill Tree: ${node.dataset.skill} (${node.dataset.score}/10)`);
+    });
+  });
+
+  /* ==========================================================================
+     18. Connected Artistic Journey Timeline Progress
+     ========================================================================== */
+  const journeyProgress = document.getElementById('journeyPathProgress');
+  if (journeyProgress && hasGsap && !hasReducedMotion) {
+    gsap.fromTo(journeyProgress,
+      { strokeDashoffset: 1000 },
+      {
+        strokeDashoffset: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#artisticJourney',
+          start: 'top 70%',
+          end: 'bottom 60%',
+          scrub: 1
+        }
+      }
+    );
+  }
+
+  /* ==========================================================================
+     19. Magnetic Button Micro-Interactions
+     ========================================================================== */
+  if (!hasReducedMotion) {
+    const magneticButtons = document.querySelectorAll('.btn-magnetic');
+    magneticButtons.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.28;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.28;
+        btn.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate3d(0, 0, 0)';
+      });
+    });
+  }
 
 });
 

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-5">
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=3d-6">
 </head>
 <body class="studio-dark">
 
@@ -26,12 +26,14 @@
         <span class="badge badge-3d">Studio 3D</span>
       </div>
       <nav class="nav-links">
-        <a href="#upload" class="nav-link">Upload</a>
+        <a href="#sketchbook-reveal" class="nav-link">Sketchbook</a>
+        <a href="#sketchbook-showcase" class="nav-link">Showcase</a>
         <a href="#gallery" class="nav-link">Gallery (<span id="galleryCount">{{ artworks|length }}</span>)</a>
-        <a href="#daily-challenge" class="nav-link">Daily Challenge</a>
-        <a href="#artist-progress" class="nav-link">Progress</a>
-        <a href="#ai-vision" class="nav-link">AI Analysis</a>
-        <a href="#scoring-rubric" class="nav-link">Scorecard</a>
+        <a href="#ai-vision" class="nav-link">AI Vision</a>
+        <a href="#improve-sketch" class="nav-link">Improve</a>
+        <a href="#before-after" class="nav-link">Before/After</a>
+        <a href="#art-coach" class="nav-link">Coach &amp; Skills</a>
+        <a href="#daily-challenge" class="nav-link">Challenge</a>
       </nav>
       <div class="nav-actions">
         {% if user.is_authenticated %}
@@ -57,49 +59,214 @@
     </div>
   {% endif %}
 
-  <!-- 3D Hero & Generative Canvas Section -->
-  <section class="hero-section hero-3d">
-    <!-- Jitter Gradients Haze Ambient Backdrop -->
-    <div class="gradients-haze-backdrop" aria-hidden="true">
-      <div class="haze-blob haze-blob-indigo"></div>
-      <div class="haze-blob haze-blob-cyan"></div>
-      <div class="haze-blob haze-blob-rose"></div>
-    </div>
-
-    <!-- Interactive 3D Charcoal & Ink Particle Canvas -->
-    <canvas id="artDustCanvas" class="hero-dust-canvas"></canvas>
-    
-    <!-- Generative Sketch Cross-Hatch Wave Overlay -->
-    <div class="hatch-wave-backdrop" aria-hidden="true">
-      <div class="hatch-layer hatch-layer-1"></div>
-      <div class="hatch-layer hatch-layer-2"></div>
-    </div>
-
-    <div class="container hero-content">
-      <div class="hero-pill-badge">
-        <span class="pulse-dot"></span>
-        <span>Interactive Sketch Studio</span>
+  <!-- 3D Hero & Multi-Layer Depth Composition -->
+  <section class="hero-section hero-3d" id="hero">
+    <!-- LAYER 1: BACKGROUND DEPTH (Gradients Haze + Star/Dust Canvas) -->
+    <div class="hero-depth-layer hero-depth-bg" aria-hidden="true">
+      <div class="gradients-haze-backdrop">
+        <div class="haze-blob haze-blob-indigo"></div>
+        <div class="haze-blob haze-blob-cyan"></div>
+        <div class="haze-blob haze-blob-rose"></div>
       </div>
-      <h1 class="hero-title motion-blur-text">
-        Where sketches meet <span class="gradient-text gradient-glow">constructive eyes</span>.
-      </h1>
-      <p class="hero-subtitle">
-        Upload your raw pencil sketches, charcoal studies, and concept art. Receive focused community feedback, 10-star ratings, and AI vision critique.
-      </p>
+      <!-- Interactive Charcoal & Ink Particle Canvas -->
+      <canvas id="artDustCanvas" class="hero-dust-canvas"></canvas>
+      <div class="hatch-wave-backdrop">
+        <div class="hatch-layer hatch-layer-1"></div>
+        <div class="hatch-layer hatch-layer-2"></div>
+      </div>
+    </div>
 
-      <!-- Quick Interactive Stats Bar -->
-      <div class="hero-stats-bar">
-        <div class="stat-pill">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          <span><strong>{{ artworks|length }}</strong> Sketches</span>
+    <!-- LAYER 2: MIDDLE DEPTH (Decorative Sketch Lines, Action Vectors & Graphite Fragments) -->
+    <div class="hero-depth-layer hero-depth-mid" aria-hidden="true">
+      <!-- Subtle Floating Graphite Shards -->
+      <div class="graphite-shard shard-1"></div>
+      <div class="graphite-shard shard-2"></div>
+      <div class="graphite-shard shard-3"></div>
+      <div class="graphite-shard shard-4"></div>
+
+      <!-- Subtle Anatomy & Action-Line SVG Overlay -->
+      <svg class="hero-sketch-vectors" viewBox="0 0 1200 600" fill="none" preserveAspectRatio="none">
+        <path d="M100,500 C300,450 450,200 700,280 C950,360 1050,150 1150,120" stroke="rgba(168,85,247,0.18)" stroke-width="1.5" stroke-dasharray="6 6" />
+        <path d="M50,320 C280,180 500,420 850,200 C1000,100 1100,240 1180,300" stroke="rgba(56,189,248,0.15)" stroke-width="1.5" stroke-dasharray="4 8" />
+        <!-- Head Cranial Oval & Facial Midline Vector in Middle Depth -->
+        <ellipse cx="980" cy="280" rx="90" ry="110" stroke="rgba(147,197,253,0.12)" stroke-width="1" />
+        <line x1="980" y1="150" x2="980" y2="410" stroke="rgba(147,197,253,0.12)" stroke-width="1" stroke-dasharray="2 4" />
+        <line x1="900" y1="280" x2="1060" y2="280" stroke="rgba(147,197,253,0.12)" stroke-width="1" />
+      </svg>
+    </div>
+
+    <!-- LAYER 3: FOREGROUND DEPTH (Headings, CTAs, Studio Badge) -->
+    <div class="hero-depth-layer hero-depth-fg">
+      <div class="container hero-content">
+        <div class="hero-pill-badge">
+          <span class="pulse-dot"></span>
+          <span>Interactive Sketch Studio</span>
         </div>
-        <div class="stat-pill">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
-          <span><strong>3D</strong> Card Tilt</span>
+        <h1 class="hero-title motion-blur-text" id="heroTitle">
+          Where sketches meet <span class="gradient-text gradient-glow">constructive eyes</span>.
+        </h1>
+        <p class="hero-subtitle">
+          Upload your raw pencil sketches, charcoal studies, and concept art. Receive focused community feedback, 10-star ratings, and AI vision critique.
+        </p>
+
+        <!-- Quick Interactive Stats Bar -->
+        <div class="hero-stats-bar">
+          <div class="stat-pill">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span><strong>{{ artworks|length }}</strong> Sketches</span>
+          </div>
+          <div class="stat-pill">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+            <span><strong>3D</strong> Card Tilt</span>
+          </div>
+          <div class="stat-pill">
+            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
+            <span><strong>Gemini</strong> Vision AI</span>
+          </div>
         </div>
-        <div class="stat-pill">
-          <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1"/></svg>
-          <span><strong>Gemini</strong> Vision AI</span>
+
+        <div class="hero-actions-row">
+          <a href="#upload" class="btn btn-primary btn-lg btn-magnetic btn-3d-pulse btn-trace">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Publish a Study</span>
+          </a>
+          <a href="#sketchbook-showcase" class="btn btn-outline btn-lg btn-magnetic">
+            <span>Explore Showcase</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- FEATURE 1: Cinematic Sketchbook Reveal Section           -->
+  <!-- ======================================================== -->
+  <section class="studio-section sketchbook-reveal-section" id="sketchbook-reveal">
+    <div class="container">
+      <div class="sketchbook-stage card-3d-base" id="sketchbookStage">
+        <div class="sketchbook-halo-glow" aria-hidden="true"></div>
+        <div class="sketchbook-book" id="sketchbookBook">
+          <div class="sketchbook-spine" aria-hidden="true"></div>
+          <div class="sketchbook-page sketchbook-page-left">
+            <div class="sketchbook-watermark">ARTICRARE VOL. IV</div>
+            <div class="sketchbook-thumb-box">
+              <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Original Graphite Study" class="sketchbook-img">
+              <span class="sketchbook-caption">Graphite on 180gsm Cold Press Paper</span>
+            </div>
+          </div>
+          <div class="sketchbook-page sketchbook-page-right">
+            <span class="section-eyebrow">The Artist's Sanctuary</span>
+            <h2 class="sketchbook-quote-title" id="sketchbookTitle">
+              “Your sketches become part of your artistic journey.”
+            </h2>
+            <p class="sketchbook-quote-body">
+              Every tentative gesture line, every erased construction plane, and every deep 8B shadow mark is recorded. Here, imperfection is the raw currency of growth.
+            </p>
+            <div class="sketchbook-stats-mini">
+              <div class="mini-metric">
+                <span class="mini-num">100%</span>
+                <span class="mini-label">Artist Copyright</span>
+              </div>
+              <div class="mini-metric">
+                <span class="mini-num">0.8°</span>
+                <span class="mini-label">Eye Level Alignment</span>
+              </div>
+              <div class="mini-metric">
+                <span class="mini-num">60fps</span>
+                <span class="mini-label">GPU Smooth Motion</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- FEATURE 2: Scrolling Stacked Artwork Showcase Deck       -->
+  <!-- ======================================================== -->
+  <section class="studio-section showcase-stack-section" id="sketchbook-showcase">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Curated Studies</span>
+        <h2 class="section-title">Physical Sketchbook Showcase</h2>
+        <p class="section-subtitle">
+          Scroll through stacked physical study sheets. Watch each sketch enter with realistic paper depth, subtle organic rotations, and dimensional perspective.
+        </p>
+      </div>
+
+      <div class="showcase-deck" id="showcaseDeck">
+        <!-- Sheet 1 -->
+        <div class="showcase-sheet sheet-1" data-index="1">
+          <div class="sheet-paper">
+            <div class="sheet-corner-tag">SKETCH 01</div>
+            <div class="sheet-media">
+              <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Portrait Study 01" class="sheet-img">
+            </div>
+            <div class="sheet-meta">
+              <h3>Facial Proportion &amp; Eye Plane</h3>
+              <p>Manish Rathore &bull; Pencil &amp; Graphite</p>
+              <div class="sheet-score">AI Score: <strong>8.5 / 10</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sheet 2 -->
+        <div class="showcase-sheet sheet-2" data-index="2">
+          <div class="sheet-paper">
+            <div class="sheet-corner-tag">SKETCH 02</div>
+            <div class="sheet-media">
+              {% if artworks.0 %}
+                <img src="{{ artworks.0.image.url }}" alt="{{ artworks.0.title }}" class="sheet-img">
+              {% else %}
+                <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Study 02" class="sheet-img">
+              {% endif %}
+            </div>
+            <div class="sheet-meta">
+              <h3>Volumetric Cross-Hatch Shading</h3>
+              <p>Community Master Study &bull; Core Shadows</p>
+              <div class="sheet-score">AI Score: <strong>8.8 / 10</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sheet 3 -->
+        <div class="showcase-sheet sheet-3" data-index="3">
+          <div class="sheet-paper">
+            <div class="sheet-corner-tag">SKETCH 03</div>
+            <div class="sheet-media">
+              {% if artworks.1 %}
+                <img src="{{ artworks.1.image.url }}" alt="{{ artworks.1.title }}" class="sheet-img">
+              {% else %}
+                <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Study 03" class="sheet-img">
+              {% endif %}
+            </div>
+            <div class="sheet-meta">
+              <h3>Dynamic Gesture Rhythm &amp; Spine Flow</h3>
+              <p>30-Second Quickpose &bull; Charcoal</p>
+              <div class="sheet-score">AI Score: <strong>7.9 / 10</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sheet 4 -->
+        <div class="showcase-sheet sheet-4" data-index="4">
+          <div class="sheet-paper">
+            <div class="sheet-corner-tag">SKETCH 04</div>
+            <div class="sheet-media">
+              {% if artworks.2 %}
+                <img src="{{ artworks.2.image.url }}" alt="{{ artworks.2.title }}" class="sheet-img">
+              {% else %}
+                <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Study 04" class="sheet-img">
+              {% endif %}
+            </div>
+            <div class="sheet-meta">
+              <h3>Architectural Two-Point Spatial Convergence</h3>
+              <p>Drafting Perspective &bull; Ink &amp; Line Art</p>
+              <div class="sheet-score">AI Score: <strong>9.1 / 10</strong></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -232,6 +399,7 @@
             
             <!-- Dynamic Specular Glare/Sheen Layer -->
             <div class="card-glare" aria-hidden="true"></div>
+            <div class="card-specular-light" aria-hidden="true"></div>
 
             <!-- Normalized Artwork Media Display with Studio Backing -->
             <div class="artwork-media layer-3d-media" title="Click to inspect sketch in 3D Lightbox">
@@ -329,6 +497,34 @@
         </p>
       </div>
 
+      <!-- Stepwise 6-Step Visual Scan Progression Indicator -->
+      <div class="scanner-stepwise-nav" id="scannerStepwiseNav" aria-label="Analysis Progression Steps">
+        <button type="button" class="scan-step-btn active" data-step="1">
+          <span class="step-idx">01</span>
+          <span class="step-name">Raw Sketch</span>
+        </button>
+        <button type="button" class="scan-step-btn" data-step="2">
+          <span class="step-idx">02</span>
+          <span class="step-name">Scan Beam</span>
+        </button>
+        <button type="button" class="scan-step-btn" data-step="3">
+          <span class="step-idx">03</span>
+          <span class="step-name">Landmarks</span>
+        </button>
+        <button type="button" class="scan-step-btn" data-step="4">
+          <span class="step-idx">04</span>
+          <span class="step-name">Tonal Regions</span>
+        </button>
+        <button type="button" class="scan-step-btn" data-step="5">
+          <span class="step-idx">05</span>
+          <span class="step-name">AI Labels</span>
+        </button>
+        <button type="button" class="scan-step-btn" data-step="6">
+          <span class="step-idx">06</span>
+          <span class="step-name">Composite 9.2</span>
+        </button>
+      </div>
+
       <div class="scanner-interactive-grid">
         <!-- Interactive Visual Comparison Display -->
         <div class="scanner-visual-col">
@@ -342,7 +538,7 @@
               </div>
             </div>
 
-            <div class="scanner-stage" id="scannerStage" data-mode="raw">
+            <div class="scanner-stage" id="scannerStage" data-mode="raw" data-step="1">
               <!-- Authentic Raw Sketch Image -->
               <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" 
                    alt="Hand-Drawn Portrait Study Under AI Analysis" 
@@ -427,6 +623,10 @@
                 <strong class="metric-value text-accent">9.2 / 10</strong>
               </div>
             </div>
+
+            <p class="scanner-disclaimer text-muted">
+              <small>✦ Note: This frontend visualization illustrates the analytical criteria used by our Google Gemini Vision pipeline. The final critique and scores are computed server-side via multimodal AI inference.</small>
+            </p>
           </div>
         </div>
 
@@ -473,12 +673,379 @@
   </section>
 
   <!-- ======================================================== -->
+  <!-- FEATURE 8: "Improve My Sketch" Reveal & Step Directives    -->
+  <!-- ======================================================== -->
+  <section class="studio-section improve-sketch-section" id="improve-sketch">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Actionable Directives</span>
+        <h2 class="section-title">“Improve My Sketch” Guided Transformation</h2>
+        <p class="section-subtitle">
+          Turn diagnostic numbers into immediate drawing breakthroughs. View your foundational score breakdown and activate a step-by-step master correction guide.
+        </p>
+      </div>
+
+      <div class="improve-sketch-card card-3d-base" id="improveSketchCard">
+        <!-- Baseline Score Reveal Row -->
+        <div class="improve-score-header">
+          <div class="improve-hero-score">
+            <span class="improve-score-label">Baseline AI Score</span>
+            <div class="improve-score-num-box">
+              <strong class="improve-big-num" id="improveScoreNum">7.4</strong>
+              <span class="improve-denom">/ 10</span>
+            </div>
+            <span class="improve-score-caption">Initial Structural Evaluation</span>
+          </div>
+
+          <div class="improve-subscores-grid" id="improveSubscores">
+            <div class="subscore-pill subscore-anatomy">
+              <span class="subscore-tag">Anatomy</span>
+              <strong class="subscore-val">6.8 <small>/ 10</small></strong>
+              <div class="subscore-bar"><span style="width: 68%;"></span></div>
+            </div>
+            <div class="subscore-pill subscore-values">
+              <span class="subscore-tag">Values</span>
+              <strong class="subscore-val">7.1 <small>/ 10</small></strong>
+              <div class="subscore-bar"><span style="width: 71%;"></span></div>
+            </div>
+            <div class="subscore-pill subscore-linework">
+              <span class="subscore-tag">Linework</span>
+              <strong class="subscore-val">8.2 <small>/ 10</small></strong>
+              <div class="subscore-bar"><span style="width: 82%;"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Trigger Button -->
+        <div class="improve-action-row">
+          <button type="button" class="btn btn-primary btn-lg btn-magnetic btn-3d-pulse btn-trace" id="btnGenerateGuide">
+            <span class="btn-sparkle">✦</span>
+            <span>Generate Improvement Guide</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <!-- Sequential Step Directives -->
+        <div class="improve-steps-deck" id="improveStepsDeck">
+          <!-- Step 1 -->
+          <div class="improve-step-item step-anim-1">
+            <div class="step-badge">01</div>
+            <div class="step-body">
+              <h4>Correct Head Proportion &amp; Facial Thirds</h4>
+              <p>Lower the cranial apex by 4% to balance the eye plane. Keep the distance between the hair roots and brow equal to the nose-to-chin third.</p>
+              <span class="step-tag-pill">Target: Anatomy &amp; Proportion</span>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="improve-step-item step-anim-2">
+            <div class="step-badge">02</div>
+            <div class="step-body">
+              <h4>Strengthen Jawline Core Shadow</h4>
+              <p>Switch to a sharpened 6B graphite pencil. Build a dense, un-smudged cross-hatch along the underside of the jaw to separate neck depth.</p>
+              <span class="step-tag-pill">Target: Values &amp; Lighting Depth</span>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="improve-step-item step-anim-3">
+            <div class="step-badge">03</div>
+            <div class="step-body">
+              <h4>Simplify Background Hatching</h4>
+              <p>Erase scattered scratch marks behind the hair silhouette. High-contrast negative space immediately draws the viewer's eye to facial focal points.</p>
+              <span class="step-tag-pill">Target: Composition &amp; Focus</span>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="improve-step-item step-anim-4">
+            <div class="step-badge">04</div>
+            <div class="step-body">
+              <h4>Reinforce Contour Line Weight Hierarchy</h4>
+              <p>Thicken contact shadow lines where the collar contacts the collarbone, and soften lit upper facial contours into delicate 2H whispers.</p>
+              <span class="step-tag-pill">Target: Linework &amp; Confidence</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- FEATURE 9: Before vs After Transformation Section        -->
+  <!-- ======================================================== -->
+  <section class="studio-section before-after-section" id="before-after">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Transformation</span>
+        <h2 class="section-title">Before vs After: The 30-Day Growth Benchmark</h2>
+        <p class="section-subtitle">
+          See how structured feedback directly shapes raw artistic capability. A side-by-side study comparison from Day 98 to Day 142.
+        </p>
+      </div>
+
+      <div class="before-after-container card-3d-base" id="beforeAfterCard">
+        <!-- Dual Comparative Panels -->
+        <div class="ba-panels-grid">
+          <!-- BEFORE PANEL -->
+          <div class="ba-panel ba-panel-before">
+            <div class="ba-panel-tag">BEFORE &bull; DAY 98</div>
+            <div class="ba-media-box">
+              <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="Before Study Day 98" class="ba-img">
+              <div class="ba-score-tag">
+                <span>AI Score</span>
+                <strong>6.2 <small>/ 10</small></strong>
+              </div>
+            </div>
+            <div class="ba-meta">
+              <h4>Preliminary Gesture Study</h4>
+              <p class="text-muted">Uncertain cranial volume; tentative scratching on jawline contour.</p>
+            </div>
+          </div>
+
+          <!-- CENTER DELTA SURGE BADGE -->
+          <div class="ba-center-badge-col">
+            <div class="ba-surge-pill" id="baSurgePill">
+              <span class="surge-icon">▲</span>
+              <strong class="surge-delta">+2.5</strong>
+              <span class="surge-label">IMPROVEMENT</span>
+            </div>
+            <div class="ba-connecting-arrow" aria-hidden="true">➔</div>
+          </div>
+
+          <!-- AFTER PANEL -->
+          <div class="ba-panel ba-panel-after">
+            <div class="ba-panel-tag tag-after">AFTER &bull; DAY 142</div>
+            <div class="ba-media-box">
+              {% if artworks.0 %}
+                <img src="{{ artworks.0.image.url }}" alt="{{ artworks.0.title }}" class="ba-img">
+              {% else %}
+                <img src="{% static 'img/ai_analysis_sketch_study.jpg' %}" alt="After Study Day 142" class="ba-img">
+              {% endif %}
+              <div class="ba-score-tag tag-after-score">
+                <span>AI Score</span>
+                <strong class="text-accent">8.7 <small>/ 10</small></strong>
+              </div>
+            </div>
+            <div class="ba-meta">
+              <h4>Disciplined Finished Study</h4>
+              <p class="text-muted">Crisp anatomical landmarks, rich 8B core shadows, and confident line weight.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animated Subskill Improvements Bar -->
+        <div class="ba-metrics-row">
+          <div class="ba-metric-col">
+            <div class="ba-metric-header">
+              <span>Anatomy</span>
+              <strong class="text-positive" id="baValAnatomy">+24%</strong>
+            </div>
+            <div class="ba-progress-track">
+              <div class="ba-progress-fill" style="width: 24%;"></div>
+            </div>
+          </div>
+
+          <div class="ba-metric-col">
+            <div class="ba-metric-header">
+              <span>Shading Depth</span>
+              <strong class="text-positive" id="baValShading">+31%</strong>
+            </div>
+            <div class="ba-progress-track">
+              <div class="ba-progress-fill" style="width: 31%;"></div>
+            </div>
+          </div>
+
+          <div class="ba-metric-col">
+            <div class="ba-metric-header">
+              <span>Linework Confidence</span>
+              <strong class="text-positive" id="baValLinework">+17%</strong>
+            </div>
+            <div class="ba-progress-track">
+              <div class="ba-progress-fill" style="width: 17%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- FEATURE 10 & 11: Personal AI Art Coach & Skill Tree      -->
+  <!-- ======================================================== -->
+  <section class="studio-section art-coach-section" id="art-coach">
+    <div class="container">
+      <div class="section-header-center">
+        <span class="section-eyebrow">Personal AI Art Coach</span>
+        <h2 class="section-title">Artistic Intelligence Dashboard &amp; Skill Tree</h2>
+        <p class="section-subtitle">
+          Your personal AI mentor continuously synthesizes feedback across your entire body of work, guiding your deliberate practice.
+        </p>
+      </div>
+
+      <div class="coach-dashboard-grid">
+        <!-- Column 1: Coach Intelligence Insights -->
+        <div class="coach-intel-card card-3d-base">
+          <div class="coach-avatar-row">
+            <div class="coach-avatar">✦</div>
+            <div>
+              <h3 class="coach-name">Articrare Studio AI Coach</h3>
+              <span class="coach-subtitle">Continuous Multimodal Analysis &bull; Active</span>
+            </div>
+          </div>
+
+          <div class="coach-bullet-box">
+            <div class="coach-bullet">
+              <span class="bullet-dot"></span>
+              <div>
+                <strong>12 Sketches Analyzed</strong>
+                <p class="text-muted">Aggregated across pencil, charcoal, and ink studies in the past 45 days.</p>
+              </div>
+            </div>
+            <div class="coach-bullet">
+              <span class="bullet-dot bullet-positive"></span>
+              <div>
+                <strong>Linework has improved consistently</strong>
+                <p class="text-muted">Hesitation marks decreased by 40%; clean contour tapering now exceeds studio standards.</p>
+              </div>
+            </div>
+            <div class="coach-bullet">
+              <span class="bullet-dot bullet-warning"></span>
+              <div>
+                <strong>Tonal values need more practice</strong>
+                <p class="text-muted">Midtones dominate; forms lack punch due to hesitant 8B darks in occlusion zones.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="coach-focus-box">
+            <div class="focus-label-row">
+              <span class="focus-pill">CURRENT FOCUS</span>
+              <strong class="focus-title">LIGHT &amp; SHADOW</strong>
+            </div>
+            <div class="practice-callout">
+              <span class="practice-tag">RECOMMENDED PRACTICE</span>
+              <p class="practice-text">3 dedicated grayscale value studies with spherical light falloff before next full portrait.</p>
+              <a href="#upload" class="btn btn-sm btn-outline">Start Value Study →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Interactive 10-Node Artistic Skill Tree -->
+        <div class="skill-tree-card card-3d-base">
+          <div class="skill-tree-header">
+            <div>
+              <h3>Artistic Skill Tree</h3>
+              <p class="text-muted">Hover or tap any skill node to inspect proficiency and progress</p>
+            </div>
+            <span class="tree-status-pill">Overall Mastery: <strong>7.9 / 10</strong></span>
+          </div>
+
+          <!-- SVG Visual Skill Graph -->
+          <div class="skill-tree-canvas-wrapper" id="skillTreeWrapper">
+            <svg class="skill-tree-svg" viewBox="0 0 600 360" id="skillTreeSvg">
+              <!-- Connecting Branch Lines -->
+              <line x1="80" y1="80" x2="200" y2="100" class="tree-branch-line" />
+              <line x1="80" y1="200" x2="200" y2="100" class="tree-branch-line" />
+              <line x1="80" y1="280" x2="200" y2="260" class="tree-branch-line" />
+              <line x1="200" y1="100" x2="340" y2="180" class="tree-branch-line branch-active" />
+              <line x1="200" y1="260" x2="340" y2="180" class="tree-branch-line branch-active" />
+              <line x1="340" y1="180" x2="480" y2="80" class="tree-branch-line" />
+              <line x1="340" y1="180" x2="480" y2="180" class="tree-branch-line branch-focus" />
+              <line x1="340" y1="180" x2="480" y2="280" class="tree-branch-line" />
+              <line x1="480" y1="80" x2="560" y2="120" class="tree-branch-line" />
+              <line x1="480" y1="280" x2="560" y2="240" class="tree-branch-line" />
+            </svg>
+
+            <!-- 10 Interactive DOM Skill Nodes -->
+            <div class="tree-nodes-container">
+              <!-- Node 1: Anatomy -->
+              <button type="button" class="tree-node node-mastered" style="top: 22%; left: 13%;" data-skill="Anatomy" data-score="8.1" data-level="Advanced" data-desc="Facial thirds symmetry, skeletal landmarks, and cranial alignment.">
+                <span class="node-dot"></span>
+                <span class="node-label">Anatomy</span>
+              </button>
+
+              <!-- Node 2: Perspective -->
+              <button type="button" class="tree-node node-mastered" style="top: 55%; left: 13%;" data-skill="Perspective" data-score="7.7" data-level="Proficient" data-desc="1-point and 2-point horizon spatial convergence and foreshortening.">
+                <span class="node-dot"></span>
+                <span class="node-label">Perspective</span>
+              </button>
+
+              <!-- Node 3: Gesture -->
+              <button type="button" class="tree-node node-mastered" style="top: 78%; left: 13%;" data-skill="Gesture" data-score="8.5" data-level="Advanced" data-desc="Spine curve rhythm, quickpose fluidity, and shoulder-tilt equilibrium.">
+                <span class="node-dot"></span>
+                <span class="node-label">Gesture</span>
+              </button>
+
+              <!-- Node 4: Proportions -->
+              <button type="button" class="tree-node node-mastered" style="top: 28%; left: 33%;" data-skill="Proportions" data-score="8.4" data-level="Advanced" data-desc="Head-to-body ratios, eye width spacing, and silhouette balance.">
+                <span class="node-dot"></span>
+                <span class="node-label">Proportions</span>
+              </button>
+
+              <!-- Node 5: Linework -->
+              <button type="button" class="tree-node node-mastered" style="top: 72%; left: 33%;" data-skill="Linework" data-score="8.7" data-level="Master" data-desc="Confident tapered strokes, line weight hierarchy, and zero hesitation scratches.">
+                <span class="node-dot"></span>
+                <span class="node-label">Linework</span>
+              </button>
+
+              <!-- Node 6: Composition (Hub) -->
+              <button type="button" class="tree-node node-active" style="top: 50%; left: 56%;" data-skill="Composition" data-score="7.9" data-level="Proficient" data-desc="Focal point hierarchy, rule of thirds, and dynamic negative space framing.">
+                <span class="node-dot dot-pulse"></span>
+                <span class="node-label">Composition</span>
+              </button>
+
+              <!-- Node 7: Shading -->
+              <button type="button" class="tree-node" style="top: 22%; left: 80%;" data-skill="Shading" data-score="7.1" data-level="Intermediate" data-desc="Cross-hatching around form, smooth graphite gradation, paper tooth control.">
+                <span class="node-dot"></span>
+                <span class="node-label">Shading</span>
+              </button>
+
+              <!-- Node 8: Lighting (CURRENT FOCUS) -->
+              <button type="button" class="tree-node node-focus" style="top: 50%; left: 80%;" data-skill="Lighting" data-score="6.8" data-level="Current Focus" data-desc="Values from pure paper highlights to 8B velvet core shadows and bounce light.">
+                <span class="node-dot dot-glow"></span>
+                <span class="node-label">Lighting ★</span>
+              </button>
+
+              <!-- Node 9: Environment -->
+              <button type="button" class="tree-node" style="top: 78%; left: 80%;" data-skill="Environment" data-score="7.0" data-level="Intermediate" data-desc="Atmospheric depth, background scale, and architectural landscape integration.">
+                <span class="node-dot"></span>
+                <span class="node-label">Environment</span>
+              </button>
+
+              <!-- Node 10: Color -->
+              <button type="button" class="tree-node" style="top: 33%; left: 93%;" data-skill="Color" data-score="7.2" data-level="Intermediate" data-desc="Hue temperature, saturation balance, and complementary accent contrast.">
+                <span class="node-dot"></span>
+                <span class="node-label">Color</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Skill Inspector Card -->
+          <div class="skill-inspector-box" id="skillInspector">
+            <div class="inspector-header">
+              <span class="inspector-title" id="inspectorSkillName">Lighting (Current Focus)</span>
+              <span class="inspector-badge" id="inspectorSkillLevel">Target Practice</span>
+            </div>
+            <div class="inspector-score-row">
+              <strong class="inspector-score" id="inspectorSkillScore">6.8 / 10</strong>
+              <p class="inspector-desc" id="inspectorSkillDesc">Values from pure paper highlights to 8B velvet core shadows and bounce light. Focus your next study on shadow planes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
   <!-- SECTION 2: Daily Sketch Challenge & Practice-To-Growth   -->
   <!-- ======================================================== -->
   <section class="studio-section daily-challenge-section" id="daily-challenge">
     <div class="container">
-      <div class="challenge-card card-3d-base">
-        <div class="challenge-header">
+      <div class="challenge-3d-wrapper" id="challenge3dWrapper">
+        <div class="challenge-card card-3d-base card-3d-tilt" data-tilt id="challengeCard">
+          <div class="card-specular-light" aria-hidden="true"></div>
+          <div class="challenge-header">
           <div class="challenge-badges">
             <span class="challenge-badge-day">Day 142 • Active Challenge</span>
             <span class="challenge-badge-category" id="challengeCategoryBadge">Pencil &amp; Graphite</span>
@@ -566,6 +1133,7 @@
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -714,49 +1282,86 @@
           </div>
         </div>
 
-        <!-- 10-Study History Micro-Timeline -->
-        <div class="study-timeline-bar">
-          <span class="timeline-label">10-Study Trajectory:</span>
-          <div class="timeline-dots-row">
-            <div class="timeline-step" data-score="6.4" title="Study #1: 6.4 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#1</span>
+        <!-- FEATURE 12: Artistic Journey & Evolution Timeline -->
+        <div class="artistic-journey-container" id="artisticJourney">
+          <div class="journey-header">
+            <span class="journey-eyebrow">Milestone Progress Trajectory</span>
+            <h3 class="journey-title">Your Artistic Journey: From First Line to Mastery</h3>
+            <p class="text-muted">An animated path tracing critical breakthrough studies across your sketch archive.</p>
+          </div>
+
+          <!-- Connected Milestone Track with Animated SVG Path -->
+          <div class="journey-track-wrapper">
+            <svg class="journey-track-svg" viewBox="0 0 800 120" preserveAspectRatio="none" id="journeySvg">
+              <path d="M 50 60 Q 200 20 300 60 T 550 60 T 750 60" class="journey-path-base" />
+              <path d="M 50 60 Q 200 20 300 60 T 550 60 T 750 60" class="journey-path-progress" id="journeyPathProgress" />
+            </svg>
+
+            <div class="journey-milestones-row">
+              <!-- Milestone 1 -->
+              <div class="journey-milestone milestone-1" data-step="1">
+                <div class="milestone-badge">
+                  <span class="milestone-num">#01</span>
+                  <span class="milestone-dot"></span>
+                </div>
+                <div class="milestone-card card-3d-base">
+                  <span class="milestone-title">Sketch #01</span>
+                  <strong class="milestone-score">6.2 <small>/ 10</small></strong>
+                  <span class="milestone-note">Raw gesture warmup</span>
+                </div>
+              </div>
+
+              <!-- Milestone 2 -->
+              <div class="journey-milestone milestone-2" data-step="2">
+                <div class="milestone-badge">
+                  <span class="milestone-num">#04</span>
+                  <span class="milestone-dot"></span>
+                </div>
+                <div class="milestone-card card-3d-base">
+                  <span class="milestone-title">Sketch #04</span>
+                  <strong class="milestone-score">6.8 <small>/ 10</small></strong>
+                  <span class="milestone-note">Facial thirds symmetry</span>
+                </div>
+              </div>
+
+              <!-- Milestone 3 -->
+              <div class="journey-milestone milestone-3" data-step="3">
+                <div class="milestone-badge">
+                  <span class="milestone-num">#08</span>
+                  <span class="milestone-dot"></span>
+                </div>
+                <div class="milestone-card card-3d-base">
+                  <span class="milestone-title">Sketch #08</span>
+                  <strong class="milestone-score">7.6 <small>/ 10</small></strong>
+                  <span class="milestone-note">Cross-contour volume</span>
+                </div>
+              </div>
+
+              <!-- Milestone 4 -->
+              <div class="journey-milestone milestone-4 milestone-peak" data-step="4">
+                <div class="milestone-badge">
+                  <span class="milestone-num">#12</span>
+                  <span class="milestone-dot dot-peak"></span>
+                </div>
+                <div class="milestone-card card-3d-base card-peak-milestone">
+                  <span class="milestone-title">Sketch #12</span>
+                  <strong class="milestone-score text-accent">8.7 <small>/ 10</small></strong>
+                  <span class="milestone-note">Exhibition grade finish</span>
+                </div>
+              </div>
             </div>
-            <div class="timeline-step" data-score="6.7" title="Study #2: 6.7 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#2</span>
-            </div>
-            <div class="timeline-step" data-score="6.5" title="Study #3: 6.5 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#3</span>
-            </div>
-            <div class="timeline-step" data-score="7.1" title="Study #4: 7.1 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#4</span>
-            </div>
-            <div class="timeline-step" data-score="7.0" title="Study #5: 7.0 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#5</span>
-            </div>
-            <div class="timeline-step" data-score="7.4" title="Study #6: 7.4 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#6</span>
-            </div>
-            <div class="timeline-step" data-score="7.6" title="Study #7: 7.6 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#7</span>
-            </div>
-            <div class="timeline-step" data-score="7.8" title="Study #8: 7.8 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#8</span>
-            </div>
-            <div class="timeline-step" data-score="8.0" title="Study #9: 8.0 / 10">
-              <span class="step-dot"></span>
-              <span class="step-num">#9</span>
-            </div>
-            <div class="timeline-step active" data-score="8.1" title="Study #10: 8.1 / 10 (Current Peak)">
-              <span class="step-dot dot-peak"></span>
-              <span class="step-num">#10 (8.1)</span>
+          </div>
+
+          <!-- Artistic Evolution Climax Banner -->
+          <div class="evolution-climax-card card-3d-base" id="evolutionClimax">
+            <div class="climax-glow-halo" aria-hidden="true"></div>
+            <div class="climax-content">
+              <span class="climax-eyebrow">JOURNEY CLIMAX</span>
+              <h2 class="climax-title">YOUR ARTISTIC EVOLUTION</h2>
+              <div class="climax-delta-row">
+                <span class="climax-surge-badge">+38% OVERALL IMPROVEMENT</span>
+                <span class="climax-sub">From tentative 6.2 gesture beginnings to confident 8.7 master-level draftsmanship across 12 analyzed studies.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1151,6 +1756,9 @@
     </button>
   </aside>
 
-  <script src="{% static 'app.js' %}?v=3d-5"></script>
+  <!-- GSAP 3.12.5 & ScrollTrigger (with automatic fallback handling in app.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="{% static 'app.js' %}?v=3d-6"></script>
 </body>
 </html>
