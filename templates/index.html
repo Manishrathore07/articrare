@@ -233,77 +233,74 @@
             <!-- Dynamic Specular Glare/Sheen Layer -->
             <div class="card-glare" aria-hidden="true"></div>
 
+            <!-- Normalized Artwork Media Display with Studio Backing -->
             <div class="artwork-media layer-3d-media" title="Click to inspect sketch in 3D Lightbox">
+              <div class="media-ambient-glow" style="background-image: url('{{ art.image.url }}');" aria-hidden="true"></div>
               <img src="{{ art.image.url }}" alt="{{ art.title }}" class="inspectable-image" data-full="{{ art.image.url }}">
-              <div class="media-inspect-hint">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                <span>Inspect in 3D</span>
-              </div>
+              
+              <!-- Subtle Category Chip on Image Corner -->
+              <span class="media-category-chip">{{ art.category }}</span>
+
+              <!-- Corner Like Button -->
+              <button type="button" class="btn-like-corner btn-like" data-id="{{ art.id }}" title="Like this study">
+                <svg class="like-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="like-count">{{ art.likes }}</span>
+              </button>
             </div>
 
+            <!-- Simplified, Elegant Card Details -->
             <div class="artwork-details layer-3d-content">
-              <div>
-                <div class="artwork-meta layer-3d-top">
+              <div class="card-meta-header">
+                <h3 class="artwork-title" title="{{ art.title }}">{{ art.title }}</h3>
+                <div class="artist-byline">
                   {% if art.user %}
-                    <a href="{% url 'profile' art.user.username %}" class="artist-tag artist-link">
-                      <span class="artist-avatar">{{ art.user.username|first|upper }}</span>
-                      <strong>{{ art.user.username }}</strong>
+                    <a href="{% url 'profile' art.user.username %}" class="artist-name-link">
+                      <span class="artist-avatar-sm">{{ art.user.username|first|upper }}</span>
+                      <span>{{ art.user.username }}</span>
                     </a>
                   {% else %}
-                    <span class="artist-tag"><strong>{{ art.artist_name }}</strong></span>
-                  {% endif %}
-                  <span class="category-chip layer-3d-chip">{{ art.category }}</span>
-                </div>
-                <h3 class="artwork-title">{{ art.title }}</h3>
-                <p class="artwork-notes">"{{ art.notes }}"</p>
-
-                <div class="critique-box layer-3d-critique {% if art.ai_powered %}critique-box-ai{% endif %}">
-                  <div class="critique-header">
-                    <div class="critique-rating">
-                      <svg class="star-svg" width="15" height="15" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                      <span>{{ art.score }} / 10</span>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:0.5rem;">
-                      {% if art.ai_powered %}
-                        <span class="ai-badge">✦ Gemini AI</span>
-                      {% endif %}
-                      <span class="critique-badge">{{ art.focus }}</span>
-                    </div>
-                  </div>
-                  <div class="critique-points">
-                    <div class="point-strength"><strong>✓ Strength:</strong> {{ art.strengths }}</div>
-                    <div class="point-suggestion"><strong>→ Suggestion:</strong> {{ art.suggestions }}</div>
-                  </div>
-                </div>
-
-                {% with community_avg=art.community_avg_score count=art.comment_count %}
-                <div class="community-score-bar">
-                  {% if community_avg %}
-                    <div class="community-score">
-                      <span class="community-score-label">Community Score</span>
-                      <span class="community-score-value">{{ community_avg }}/10</span>
-                      <span class="community-count">({{ count }} critique{% if count != 1 %}s{% endif %})</span>
-                    </div>
-                  {% else %}
-                    <span class="no-ratings">No community critiques yet — be first!</span>
+                    <span class="artist-name-plain">
+                      <span class="artist-avatar-sm">{{ art.artist_name|first|upper }}</span>
+                      <span>{{ art.artist_name }}</span>
+                    </span>
                   {% endif %}
                 </div>
-                {% endwith %}
               </div>
 
-              <div class="artwork-actions layer-3d-actions">
-                <button class="btn-like" data-id="{{ art.id }}">
-                  <svg class="like-icon-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                  <span class="like-count">{{ art.likes }}</span> Likes
-                </button>
-                <a href="{% url 'sketch_detail' art.id %}" class="btn-critique-link">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  <span>Critique</span>
+              <!-- Dual Scores Row: AI Score & Community Score -->
+              <div class="card-dual-scores">
+                <div class="score-pill score-ai">
+                  <span class="score-label">AI Score</span>
+                  <strong class="score-val">✦ {{ art.score }}<small>/10</small></strong>
+                </div>
+                <div class="score-pill score-community">
+                  <span class="score-label">Community</span>
+                  {% with community_avg=art.community_avg_score %}
+                    {% if community_avg %}
+                      <strong class="score-val">★ {{ community_avg }}<small>/10</small></strong>
+                    {% else %}
+                      <strong class="score-val score-empty">—</strong>
+                    {% endif %}
+                  {% endwith %}
+                </div>
+              </div>
+
+              <!-- Critique Focus -->
+              <div class="card-focus-row">
+                <span class="focus-label">Focus:</span>
+                <span class="focus-val">{{ art.focus }}</span>
+              </div>
+
+              <!-- Clean Actions Row: [View Critique] [Inspect] -->
+              <div class="card-actions-row">
+                <a href="{% url 'sketch_detail' art.id %}" class="btn btn-sm btn-primary btn-critique-action">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>View Critique</span>
                 </a>
-                <button class="btn-share-link" data-url="{% url 'sketch_detail' art.id %}" title="Copy Link to Sketch">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                <button type="button" class="btn btn-sm btn-outline btn-inspect-action inspect-trigger" data-full="{{ art.image.url }}" data-title="{{ art.title }}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                  <span>Inspect</span>
                 </button>
-                <span class="timestamp">{{ art.created_at|timesince }} ago</span>
               </div>
             </div>
           </article>
@@ -1137,33 +1134,20 @@
     <div class="fab-menu" id="fabMenu" aria-hidden="true">
       <button type="button" class="fab-item" id="fabActionUpload" data-tooltip="Upload Study">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span class="fab-label">Upload Study</span>
+        <span class="fab-label">Upload</span>
       </button>
-      <button type="button" class="fab-item" id="fabActionRoll" data-tooltip="Roll Random Prompt">
+      <button type="button" class="fab-item" id="fabActionRoll" data-tooltip="Daily Challenge">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>
-        <span class="fab-label">Roll Prompt</span>
+        <span class="fab-label">Challenge</span>
       </button>
-      <button type="button" class="fab-item" id="fabActionProgress" data-tooltip="Skill Progress">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        <span class="fab-label">Skill Progress</span>
-      </button>
-      <button type="button" class="fab-item" id="fabActionSearch" data-tooltip="Search (Ctrl+K)">
+      <button type="button" class="fab-item" id="fabActionSearch" data-tooltip="Search Gallery (Ctrl+K)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span class="fab-label">Search Gallery</span>
-      </button>
-      <button type="button" class="fab-item" id="fabActionScorecard" data-tooltip="Score Calculator">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span class="fab-label">Scorecard</span>
-      </button>
-      <button type="button" class="fab-item" id="fabActionTop" data-tooltip="Back to Top">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-        <span class="fab-label">Back to Top</span>
+        <span class="fab-label">Search</span>
       </button>
     </div>
 
     <button type="button" class="fab-trigger btn-3d-pulse" id="fabTriggerBtn" aria-expanded="false" title="Studio Quick Actions">
-      <span class="fab-badge" id="fabBadgeCount">{{ artworks|length }}</span>
-      <span class="fab-icon-symbol">✦</span>
+      <span class="fab-icon-symbol">✨</span>
     </button>
   </aside>
 

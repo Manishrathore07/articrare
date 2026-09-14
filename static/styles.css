@@ -564,11 +564,11 @@ textarea {
   transform: translateY(-1px);
 }
 
-/* 3D Perspective Gallery Cards Grid */
+/* 3D Perspective Gallery Cards Grid (Responsive Multi-Column) */
 .gallery-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
   perspective: 1200px;
 }
 
@@ -577,10 +577,11 @@ textarea {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-  display: grid;
-  grid-template-columns: 340px 1fr;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed), transform var(--transition-speed);
+  display: flex;
+  flex-direction: column;
   position: relative;
+  overflow: hidden;
 }
 
 /* --- 3D TILT MECHANICS --- */
@@ -616,31 +617,7 @@ textarea {
   cursor: zoom-in;
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-
-.media-inspect-hint {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(10, 14, 23, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #c4b5fd;
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  opacity: 0;
-  transform: translateY(6px);
-  transition: all 0.25s ease;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.artwork-card:hover .media-inspect-hint {
-  opacity: 1;
-  transform: translateY(0);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .layer-3d-content {
@@ -648,94 +625,251 @@ textarea {
   transform-style: preserve-3d;
 }
 
-.layer-3d-top {
-  transform: translateZ(32px);
-}
-
-.layer-3d-chip {
-  transform: translateZ(42px);
-  display: inline-block;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-}
-
-.layer-3d-critique {
-  transform: translateZ(36px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-}
-
-.layer-3d-actions {
-  transform: translateZ(22px);
-}
-
-@media (max-width: 800px) {
-  .artwork-card {
-    grid-template-columns: 1fr;
-  }
-  .layer-3d-media {
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  }
-}
-
+/* Normalized Artwork Media Display (Artwork is the star) */
 .artwork-media {
-  background-color: #000;
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-color: #080a10;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  min-height: 280px;
+  overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.media-ambient-glow {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(35px) brightness(0.22) saturate(1.2);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .artwork-media img {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  z-index: 2;
   display: block;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.65));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.artwork-details {
-  padding: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.artwork-card:hover .artwork-media img {
+  transform: scale(1.025);
 }
 
-.artwork-meta {
+.media-category-chip {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a5b4fc;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  z-index: 10;
+}
+
+.btn-like-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.artist-tag {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.category-chip {
-  background-color: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  color: #a5b4fc;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  z-index: 10;
+}
+
+.btn-like-corner:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #f43f5e;
+}
+
+/* Simplified Card Details */
+.artwork-details {
+  padding: 1.25rem 1.4rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  flex: 1;
+  justify-content: space-between;
+  background: var(--bg-card);
+}
+
+.card-meta-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .artwork-title {
-  font-size: 1.3rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  color: white;
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.artwork-notes {
-  font-size: 0.9rem;
+.artist-byline {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+}
+
+.artist-name-link,
+.artist-name-plain {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   color: var(--text-secondary);
-  margin-bottom: 1.25rem;
-  font-style: italic;
-  border-left: 2px solid var(--accent-primary);
-  padding-left: 0.75rem;
+  text-decoration: none;
+  transition: color var(--transition-speed);
+}
+
+.artist-name-link:hover {
+  color: #c4b5fd;
+}
+
+.artist-avatar-sm {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+/* Dual Scores Row: AI Score & Community Score */
+.card-dual-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.75rem;
+}
+
+.score-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.score-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.score-val {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.score-ai .score-val {
+  color: #fbbf24;
+}
+
+.score-community .score-val {
+  color: #38bdf8;
+}
+
+.score-empty {
+  color: var(--text-muted);
+}
+
+/* Focus Row */
+.card-focus-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.focus-label {
+  color: var(--text-muted);
+}
+
+.focus-val {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+/* Clean Actions Row */
+.card-actions-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-critique-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+}
+
+.btn-inspect-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.btn-inspect-action:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
 }
 
 /* Critique & Feedback Box inside Card */

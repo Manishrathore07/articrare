@@ -396,13 +396,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   }
 
-  // Open lightbox when clicking on any sketch image in the gallery
-  document.querySelectorAll('.inspectable-image, .layer-3d-media').forEach(el => {
+  // Open lightbox when clicking on any sketch image or [Inspect] button
+  document.querySelectorAll('.inspectable-image, .layer-3d-media, .btn-inspect-action').forEach(el => {
     el.addEventListener('click', (e) => {
-      const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+      // Don't trigger if clicked on like button inside media
+      if (e.target.closest('.btn-like-corner')) return;
+      
+      const card = el.closest('.artwork-card');
+      const img = el.tagName === 'IMG' ? el : card?.querySelector('.inspectable-image');
       if (img) {
         const fullSrc = img.getAttribute('data-full') || img.src;
-        const title = img.alt || 'Sketch Inspection';
+        const title = img.alt || card?.querySelector('.artwork-title')?.textContent || 'Sketch Inspection';
         openLightbox(fullSrc, title);
       }
     });
@@ -883,10 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const fabTriggerBtn = document.getElementById('fabTriggerBtn');
   const fabActionUpload = document.getElementById('fabActionUpload');
   const fabActionRoll = document.getElementById('fabActionRoll');
-  const fabActionProgress = document.getElementById('fabActionProgress');
   const fabActionSearch = document.getElementById('fabActionSearch');
-  const fabActionScorecard = document.getElementById('fabActionScorecard');
-  const fabActionTop = document.getElementById('fabActionTop');
 
   if (fabDock && fabTriggerBtn) {
     function toggleFab(forceState = null) {
@@ -948,17 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Action 3: Skill Progress
-    if (fabActionProgress) {
-      fabActionProgress.addEventListener('click', () => {
-        toggleFab(false);
-        const progressSec = document.getElementById('artist-progress');
-        if (progressSec) progressSec.scrollIntoView({ behavior: 'smooth' });
-        showToast('📈 Artist Skill Progress & Analytics');
-      });
-    }
-
-    // Action 4: Search Gallery (Ctrl+K)
+    // Action 3: Search Gallery (Ctrl+K)
     if (fabActionSearch) {
       fabActionSearch.addEventListener('click', () => {
         toggleFab(false);
@@ -971,25 +962,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 350);
         }
         showToast('🔍 Search focused (Ctrl+K)');
-      });
-    }
-
-    // Action 5: Live Scorecard
-    if (fabActionScorecard) {
-      fabActionScorecard.addEventListener('click', () => {
-        toggleFab(false);
-        const rubric = document.getElementById('scoring-rubric');
-        if (rubric) rubric.scrollIntoView({ behavior: 'smooth' });
-        showToast('✦ 10-Point Scorecard Calculator');
-      });
-    }
-
-    // Action 6: Back to Top
-    if (fabActionTop) {
-      fabActionTop.addEventListener('click', () => {
-        toggleFab(false);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        showToast('⬆ Back to Top');
       });
     }
   }
