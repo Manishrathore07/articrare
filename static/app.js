@@ -11,88 +11,136 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ==========================================================================
-     1. 3D Floating Charcoal & Ink Dust Particle Canvas
+     1. 3D Floating Starfield, Ink Nodes & Graphite Constellation Canvas
      ========================================================================== */
   const canvas = document.getElementById('artDustCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
-    let width, height;
+    let width = 0, height = 0;
     let particles = [];
-    const PARTICLE_COUNT = 65;
-    const FOV = 400;
+    const PARTICLE_COUNT = 140; // Richer star & dust density
+    const FOV = 450;
 
-    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0, rawX: -9999, rawY: -9999 };
     let isVisible = true;
 
     function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
+      const hero = canvas.closest('.hero-section') || canvas.parentElement;
+      const rect = hero.getBoundingClientRect();
       width = canvas.width = rect.width;
       height = canvas.height = rect.height;
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    // Double-check resize after load to guarantee exact pixel resolution
+    window.addEventListener('load', resizeCanvas);
 
     // Track mouse and scroll velocity over hero section
-    const heroSection = canvas.parentElement;
+    const heroSection = canvas.closest('.hero-section') || canvas.parentElement;
     let lastScrollY = window.scrollY;
     let scrollVelocity = 0;
 
     window.addEventListener('scroll', () => {
       const curY = window.scrollY;
-      scrollVelocity = (curY - lastScrollY) * 0.08;
+      scrollVelocity = (curY - lastScrollY) * 0.15;
       lastScrollY = curY;
     }, { passive: true });
 
     heroSection.addEventListener('mousemove', (e) => {
       const rect = heroSection.getBoundingClientRect();
-      mouse.targetX = (e.clientX - rect.left - rect.width / 2) * 0.001;
-      mouse.targetY = (e.clientY - rect.top - rect.height / 2) * 0.001;
+      mouse.rawX = e.clientX - rect.left;
+      mouse.rawY = e.clientY - rect.top;
+      // Responsive dynamic tilt target
+      mouse.targetX = ((mouse.rawX / rect.width) - 0.5) * 0.0035;
+      mouse.targetY = ((mouse.rawY / rect.height) - 0.5) * 0.0035;
     });
 
     heroSection.addEventListener('mouseleave', () => {
       mouse.targetX = 0;
       mouse.targetY = 0;
+      mouse.rawX = -9999;
+      mouse.rawY = -9999;
     });
 
-    // Initialize 3D particles in a virtual volume
+    // 3D Particles with multiple star types: luminous ink stars, cyan beacons, and graphite dust
     class Particle3D {
       constructor() {
         this.reset(true);
       }
 
       reset(init = false) {
-        this.x = (Math.random() - 0.5) * (width || 800) * 1.3;
-        this.y = (Math.random() - 0.5) * (height || 400) * 1.3;
-        this.z = init ? Math.random() * 500 - 250 : 250;
-        this.vx = (Math.random() - 0.5) * 0.35;
-        this.vy = (Math.random() - 0.5) * 0.35;
-        this.vz = -0.35 - Math.random() * 0.45;
-        this.baseRadius = 1.2 + Math.random() * 2.2;
-        // Dual palette: Charcoal graphite dust vs luminous purple ink
-        this.isInk = Math.random() > 0.65;
-        this.color = this.isInk
-          ? `rgba(168, 85, 247, ${0.45 + Math.random() * 0.4})`
-          : `rgba(203, 213, 225, ${0.25 + Math.random() * 0.35})`;
+        this.x = (Math.random() - 0.5) * (width || 1200) * 1.5;
+        this.y = (Math.random() - 0.5) * (height || 600) * 1.5;
+        this.z = init ? Math.random() * 600 - 300 : 300;
+        
+        // Dynamic drift speeds with continuous ambient float
+        this.vx = (Math.random() - 0.5) * 0.75;
+        this.vy = (Math.random() - 0.5) * 0.75;
+        this.vz = -0.5 - Math.random() * 0.65;
+        
+        // Star pulse cycle
+        this.pulseAngle = Math.random() * Math.PI * 2;
+        this.pulseSpeed = 0.02 + Math.random() * 0.035;
+
+        // Variety of particle types:
+        const rand = Math.random();
+        if (rand > 0.65) {
+          // Luminous purple ink star (medium-large, glowing)
+          this.type = 'ink';
+          this.baseRadius = 1.8 + Math.random() * 2.2;
+          this.colorBase = '168, 85, 247';
+        } else if (rand > 0.40) {
+          // Electric cyan pulse star
+          this.type = 'cyan';
+          this.baseRadius = 1.5 + Math.random() * 1.8;
+          this.colorBase = '56, 189, 248';
+        } else {
+          // Silver-white graphite diamond / micro-star
+          this.type = 'graphite';
+          this.baseRadius = 1.0 + Math.random() * 1.6;
+          this.colorBase = '226, 232, 240';
+        }
       }
 
-      update(rotX, rotY, velY) {
+      update(rotX, rotY, velY, mouseRawX, mouseRawY, cx, cy) {
         // Rotate around Y axis
-        let cosY = Math.cos(rotX);
-        let sinY = Math.sin(rotX);
+        const cosY = Math.cos(rotX);
+        const sinY = Math.sin(rotX);
         let x1 = this.x * cosY - this.z * sinY;
         let z1 = this.z * cosY + this.x * sinY;
 
         // Rotate around X axis
-        let cosX = Math.cos(rotY);
-        let sinX = Math.sin(rotY);
+        const cosX = Math.cos(rotY);
+        const sinX = Math.sin(rotY);
         let y1 = this.y * cosX - z1 * sinX;
         let z2 = z1 * cosX + this.y * sinX;
 
-        this.x += this.vx;
-        this.y += this.vy - velY * 0.5; // Responds to scroll velocity!
-        this.z += this.vz;
+        // Cursor proximity gravity/deflection
+        if (mouseRawX > -1000) {
+          const depth = z2 + FOV;
+          if (depth > 10) {
+            const scale = FOV / depth;
+            const sx = x1 * scale + cx;
+            const sy = y1 * scale + cy;
+            const dx = sx - mouseRawX;
+            const dy = sy - mouseRawY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 130 && dist > 1) {
+              const push = (130 - dist) * 0.003;
+              this.x += (dx / dist) * push * 6;
+              this.y += (dy / dist) * push * 6;
+            }
+          }
+        }
 
-        if (this.z < -FOV + 50 || Math.abs(this.x) > width * 0.8 || Math.abs(this.y) > height * 0.8) {
+        // Natural movement + velocity reactive float
+        this.x += this.vx;
+        this.y += this.vy - velY * 0.6;
+        this.z += this.vz;
+        this.pulseAngle += this.pulseSpeed;
+
+        // Boundary wrapping
+        if (this.z < -FOV + 40 || Math.abs(this.x) > width * 0.95 || Math.abs(this.y) > height * 0.95) {
           this.reset(false);
         }
 
@@ -104,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       particles.push(new Particle3D());
     }
 
-    // Intersection observer to pause when hero is scrolled out of view
+    // Intersection observer to pause rendering when scrolled out of view
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0].isIntersecting;
     }, { threshold: 0.05 });
@@ -120,9 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      curRotX += (mouse.targetX - curRotX) * 0.05;
-      curRotY += (mouse.targetY - curRotY) * 0.05;
-      scrollVelocity *= 0.94; // Decay scroll velocity smoothly
+      curRotX += (mouse.targetX - curRotX) * 0.08;
+      curRotY += (mouse.targetY - curRotY) * 0.08;
+      scrollVelocity *= 0.92; // Decay scroll velocity smoothly
 
       const cx = width / 2;
       const cy = height / 2;
@@ -131,28 +179,51 @@ document.addEventListener('DOMContentLoaded', () => {
       // Project particles to 2D
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        const pos = p.update(curRotX, curRotY, scrollVelocity);
+        const pos = p.update(curRotX, curRotY, scrollVelocity, mouse.rawX, mouse.rawY, cx, cy);
         const depth = pos.z + FOV;
 
         if (depth > 10) {
           const scale = FOV / depth;
           const sx = pos.x * scale + cx;
           const sy = pos.y * scale + cy;
-          const r = Math.max(0.6, p.baseRadius * scale);
-          const alpha = Math.min(0.85, Math.max(0.1, scale * 0.8));
 
-          projected.push({ sx, sy, r, alpha, color: p.color, isInk: p.isInk });
+          // Star pulse factor
+          const pulse = 0.85 + Math.sin(p.pulseAngle) * 0.25;
+          const r = Math.max(0.7, p.baseRadius * scale * pulse);
+          const alpha = Math.min(0.95, Math.max(0.15, (scale * 0.9) * pulse));
 
-          // Draw particle
+          projected.push({ sx, sy, r, alpha, colorBase: p.colorBase, type: p.type });
+
+          // Draw Glowing Star
           ctx.beginPath();
           ctx.arc(sx, sy, r, 0, Math.PI * 2);
-          ctx.fillStyle = p.color;
+          ctx.fillStyle = `rgba(${p.colorBase}, ${alpha})`;
           ctx.fill();
+
+          // Outer halo on larger stars
+          if (r > 2.2) {
+            ctx.beginPath();
+            ctx.arc(sx, sy, r * 2.6, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.colorBase}, ${alpha * 0.22})`;
+            ctx.fill();
+          }
+
+          // Twinkle cross on prominent beacon stars
+          if (p.type === 'ink' && r > 2.6) {
+            ctx.strokeStyle = `rgba(196, 181, 253, ${alpha * 0.45})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(sx - r * 2.8, sy);
+            ctx.lineTo(sx + r * 2.8, sy);
+            ctx.moveTo(sx, sy - r * 2.8);
+            ctx.lineTo(sx, sy + r * 2.8);
+            ctx.stroke();
+          }
         }
       }
 
-      // Draw subtle sketch constellation lines between nearby particles
-      ctx.lineWidth = 0.6;
+      // Draw constellation connective lines between neighboring stars
+      ctx.lineWidth = 0.75;
       for (let i = 0; i < projected.length; i++) {
         for (let j = i + 1; j < projected.length; j++) {
           const p1 = projected[i];
@@ -161,12 +232,31 @@ document.addEventListener('DOMContentLoaded', () => {
           const dy = p1.sy - p2.sy;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 85) {
-            const lineAlpha = (1 - dist / 85) * 0.18;
-            ctx.strokeStyle = `rgba(148, 163, 184, ${lineAlpha})`;
+          if (dist < 110) {
+            const lineAlpha = (1 - dist / 110) * 0.25;
+            // Gradient or dual-tone stroke
+            ctx.strokeStyle = (p1.type === 'ink' || p2.type === 'ink')
+              ? `rgba(168, 85, 247, ${lineAlpha})`
+              : `rgba(56, 189, 248, ${lineAlpha * 0.85})`;
             ctx.beginPath();
             ctx.moveTo(p1.sx, p1.sy);
             ctx.lineTo(p2.sx, p2.sy);
+            ctx.stroke();
+          }
+        }
+
+        // Draw interactive line from cursor to nearby stars
+        if (mouse.rawX > -1000) {
+          const p = projected[i];
+          const dx = p.sx - mouse.rawX;
+          const dy = p.sy - mouse.rawY;
+          const mouseDist = Math.sqrt(dx * dx + dy * dy);
+          if (mouseDist < 120) {
+            const mLineAlpha = (1 - mouseDist / 120) * 0.45;
+            ctx.strokeStyle = `rgba(196, 181, 253, ${mLineAlpha})`;
+            ctx.beginPath();
+            ctx.moveTo(mouse.rawX, mouse.rawY);
+            ctx.lineTo(p.sx, p.sy);
             ctx.stroke();
           }
         }
@@ -1101,14 +1191,14 @@ document.addEventListener('DOMContentLoaded', () => {
      14. Stepwise AI Vision Scanner (Interactive + Scroll-Scrubbed)
      ========================================================================== */
   const stepBtns = document.querySelectorAll('.scan-step-btn');
-  const scannerStage = document.getElementById('scannerStage');
+  const stepwiseScannerStage = document.getElementById('scannerStage');
 
   function setScannerStep(step) {
     stepBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.step === String(step));
     });
-    if (scannerStage) {
-      scannerStage.setAttribute('data-step', String(step));
+    if (stepwiseScannerStage) {
+      stepwiseScannerStage.setAttribute('data-step', String(step));
     }
   }
 
