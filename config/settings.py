@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -------------------------------------------------------
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production-please')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ['*'] if DEBUG else os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Railway automatically injects RAILWAY_STATIC_URL — add it to allowed hosts
 RAILWAY_STATIC_URL = os.environ.get('RAILWAY_STATIC_URL', '')
