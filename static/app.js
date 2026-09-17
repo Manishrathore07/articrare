@@ -11,260 +11,393 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ==========================================================================
-     1. 3D Floating Starfield, Ink Nodes & Graphite Constellation Canvas
+     1. Generative Graphite Atelier Motion Engine (Bespoke Interactive 3D Canvas)
+     Features:
+     - Multi-Octave Fluid Streamlines with Tapering Graphite Trails
+     - Kinetic Figure Topography (3D Undulating Cross-Contour Ribbons)
+     - Classical Atelier 3D Wireframe Polyhedra (Icosahedron & Perspective Box)
+     - Interactive Dynamic Fluid Swirls & Mouse Air Currents
      ========================================================================== */
   const canvas = document.getElementById('artDustCanvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
     let width = 0, height = 0;
-    let particles = [];
-    const PARTICLE_COUNT = 140; // Richer star & dust density
-    const FOV = 450;
-
-    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0, rawX: -9999, rawY: -9999 };
     let isVisible = true;
 
     function resizeCanvas() {
       const hero = canvas.closest('.hero-section') || canvas.parentElement;
       const rect = hero.getBoundingClientRect();
-      width = canvas.width = rect.width;
-      height = canvas.height = rect.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-    // Double-check resize after load to guarantee exact pixel resolution
     window.addEventListener('load', resizeCanvas);
 
-    // Track mouse and scroll velocity over hero section
+    // Mouse & air vortex tracking
     const heroSection = canvas.closest('.hero-section') || canvas.parentElement;
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
+    let mouse = {
+      x: -9999, y: -9999,
+      vx: 0, vy: 0,
+      lastX: -9999, lastY: -9999,
+      targetTiltX: 0, targetTiltY: 0,
+      curTiltX: 0, curTiltY: 0
+    };
+
+    let time = 0;
+    let scrollY = window.scrollY;
 
     window.addEventListener('scroll', () => {
-      const curY = window.scrollY;
-      scrollVelocity = (curY - lastScrollY) * 0.15;
-      lastScrollY = curY;
+      scrollY = window.scrollY;
     }, { passive: true });
 
     heroSection.addEventListener('mousemove', (e) => {
       const rect = heroSection.getBoundingClientRect();
-      mouse.rawX = e.clientX - rect.left;
-      mouse.rawY = e.clientY - rect.top;
-      // Responsive dynamic tilt target
-      mouse.targetX = ((mouse.rawX / rect.width) - 0.5) * 0.0035;
-      mouse.targetY = ((mouse.rawY / rect.height) - 0.5) * 0.0035;
+      const newX = e.clientX - rect.left;
+      const newY = e.clientY - rect.top;
+
+      if (mouse.lastX > -1000) {
+        mouse.vx = (newX - mouse.lastX) * 0.45;
+        mouse.vy = (newY - mouse.lastY) * 0.45;
+      }
+      mouse.lastX = mouse.x;
+      mouse.lastY = mouse.y;
+      mouse.x = newX;
+      mouse.y = newY;
+
+      mouse.targetTiltX = ((newX / rect.width) - 0.5) * 0.5;
+      mouse.targetTiltY = ((newY / rect.height) - 0.5) * 0.5;
     });
 
     heroSection.addEventListener('mouseleave', () => {
-      mouse.targetX = 0;
-      mouse.targetY = 0;
-      mouse.rawX = -9999;
-      mouse.rawY = -9999;
+      mouse.x = -9999;
+      mouse.y = -9999;
+      mouse.vx = 0;
+      mouse.vy = 0;
+      mouse.targetTiltX = 0;
+      mouse.targetTiltY = 0;
     });
 
-    // 3D Particles with multiple star types: luminous ink stars, cyan beacons, and graphite dust
-    class Particle3D {
+    /* -------------------------------------------------------------
+       A. Fluid Graphite & Ink Streamlines (Multi-point trailing ribbons)
+       ------------------------------------------------------------- */
+    const STREAM_COUNT = 110;
+    const TRAIL_LENGTH = 7;
+
+    class Streamline {
       constructor() {
         this.reset(true);
       }
 
-      reset(init = false) {
-        this.x = (Math.random() - 0.5) * (width || 1200) * 1.5;
-        this.y = (Math.random() - 0.5) * (height || 600) * 1.5;
-        this.z = init ? Math.random() * 600 - 300 : 300;
-        
-        // Dynamic drift speeds with continuous ambient float
-        this.vx = (Math.random() - 0.5) * 0.75;
-        this.vy = (Math.random() - 0.5) * 0.75;
-        this.vz = -0.5 - Math.random() * 0.65;
-        
-        // Star pulse cycle
-        this.pulseAngle = Math.random() * Math.PI * 2;
-        this.pulseSpeed = 0.02 + Math.random() * 0.035;
+      reset(initial = false) {
+        this.x = Math.random() * (width || 1200);
+        this.y = initial ? Math.random() * (height || 600) : (Math.random() < 0.5 ? -20 : (height || 600) + 20);
+        this.speed = 0.8 + Math.random() * 1.5;
+        this.history = [];
+        this.seed = Math.random() * 1000;
+        this.baseWidth = 0.8 + Math.random() * 1.6;
 
-        // Variety of particle types:
-        const rand = Math.random();
-        if (rand > 0.65) {
-          // Luminous purple ink star (medium-large, glowing)
-          this.type = 'ink';
-          this.baseRadius = 1.8 + Math.random() * 2.2;
-          this.colorBase = '168, 85, 247';
-        } else if (rand > 0.40) {
-          // Electric cyan pulse star
-          this.type = 'cyan';
-          this.baseRadius = 1.5 + Math.random() * 1.8;
-          this.colorBase = '56, 189, 248';
+        const p = Math.random();
+        if (p > 0.65) {
+          this.color = '168, 85, 247'; // Violet ink
+          this.maxAlpha = 0.45 + Math.random() * 0.35;
+        } else if (p > 0.35) {
+          this.color = '56, 189, 248'; // Blueprint cyan
+          this.maxAlpha = 0.40 + Math.random() * 0.35;
+        } else if (p > 0.15) {
+          this.color = '244, 63, 94'; // Atelier crimson/rose
+          this.maxAlpha = 0.35 + Math.random() * 0.30;
         } else {
-          // Silver-white graphite diamond / micro-star
-          this.type = 'graphite';
-          this.baseRadius = 1.0 + Math.random() * 1.6;
-          this.colorBase = '226, 232, 240';
+          this.color = '226, 232, 240'; // 6B Graphite silver
+          this.maxAlpha = 0.50 + Math.random() * 0.35;
         }
       }
 
-      update(rotX, rotY, velY, mouseRawX, mouseRawY, cx, cy) {
-        // Rotate around Y axis
-        const cosY = Math.cos(rotX);
-        const sinY = Math.sin(rotX);
-        let x1 = this.x * cosY - this.z * sinY;
-        let z1 = this.z * cosY + this.x * sinY;
+      update(t) {
+        // Multi-octave curl vector field
+        const scale = 0.0022;
+        const angle = Math.sin(this.x * scale + t * 0.45 + this.seed) * 2.2 +
+                      Math.cos(this.y * scale + t * 0.35 + this.seed) * 1.8;
 
-        // Rotate around X axis
-        const cosX = Math.cos(rotY);
-        const sinX = Math.sin(rotY);
-        let y1 = this.y * cosX - z1 * sinX;
-        let z2 = z1 * cosX + this.y * sinX;
+        let vx = Math.cos(angle) * this.speed;
+        let vy = (Math.sin(angle) * 0.7 - 0.3) * this.speed;
 
-        // Cursor proximity gravity/deflection
-        if (mouseRawX > -1000) {
-          const depth = z2 + FOV;
-          if (depth > 10) {
-            const scale = FOV / depth;
-            const sx = x1 * scale + cx;
-            const sy = y1 * scale + cy;
-            const dx = sx - mouseRawX;
-            const dy = sy - mouseRawY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 130 && dist > 1) {
-              const push = (130 - dist) * 0.003;
-              this.x += (dx / dist) * push * 6;
-              this.y += (dy / dist) * push * 6;
-            }
+        // Dynamic vortex / air current deflection from mouse movement
+        if (mouse.x > -1000) {
+          const dx = this.x - mouse.x;
+          const dy = this.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 180 && dist > 1) {
+            const force = (1 - dist / 180);
+            // Repulsion + swirl
+            const swirlX = -dy / dist;
+            const swirlY = dx / dist;
+            vx += (dx / dist) * force * 4.5 + swirlX * force * 3.5 + mouse.vx * 0.15;
+            vy += (dy / dist) * force * 4.5 + swirlY * force * 3.5 + mouse.vy * 0.15;
           }
         }
 
-        // Natural movement + velocity reactive float
-        this.x += this.vx;
-        this.y += this.vy - velY * 0.6;
-        this.z += this.vz;
-        this.pulseAngle += this.pulseSpeed;
+        this.x += vx;
+        this.y += vy;
 
-        // Boundary wrapping
-        if (this.z < -FOV + 40 || Math.abs(this.x) > width * 0.95 || Math.abs(this.y) > height * 0.95) {
-          this.reset(false);
+        // Record trail
+        this.history.unshift({ x: this.x, y: this.y });
+        if (this.history.length > TRAIL_LENGTH) {
+          this.history.pop();
         }
 
-        return { x: x1, y: y1, z: z2 };
+        // Wrap around boundaries
+        if (this.x < -60 || this.x > width + 60 || this.y < -60 || this.y > height + 60) {
+          this.reset(false);
+        }
+      }
+
+      draw(c) {
+        if (this.history.length < 2) return;
+
+        c.beginPath();
+        c.moveTo(this.history[0].x, this.history[0].y);
+        for (let i = 1; i < this.history.length; i++) {
+          c.lineTo(this.history[i].x, this.history[i].y);
+        }
+
+        c.strokeStyle = `rgba(${this.color}, ${this.maxAlpha * 0.6})`;
+        c.lineWidth = this.baseWidth;
+        c.lineCap = 'round';
+        c.stroke();
+
+        // Glowing leading particle head
+        const head = this.history[0];
+        c.beginPath();
+        c.arc(head.x, head.y, this.baseWidth * 1.3, 0, Math.PI * 2);
+        c.fillStyle = `rgba(${this.color}, ${this.maxAlpha})`;
+        c.fill();
       }
     }
 
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(new Particle3D());
+    const streamlines = [];
+    for (let i = 0; i < STREAM_COUNT; i++) {
+      streamlines.push(new Streamline());
     }
 
-    // Intersection observer to pause rendering when scrolled out of view
+    /* -------------------------------------------------------------
+       B. Kinetic Figure Topography (3D Undulating Cross-Contour Ribbons)
+       ------------------------------------------------------------- */
+    const RIBBON_COUNT = 5;
+    const RIBBON_POINTS = 32;
+
+    function drawContourRibbons(t, tiltX, tiltY) {
+      for (let r = 0; r < RIBBON_COUNT; r++) {
+        const baseY = height * (0.28 + r * 0.14) + tiltY * 40;
+        const color = r % 2 === 0 ? 'rgba(168, 85, 247, 0.14)' : 'rgba(56, 189, 248, 0.12)';
+        const accentGlow = r % 2 === 0 ? 'rgba(196, 181, 253, 0.7)' : 'rgba(125, 211, 252, 0.7)';
+
+        ctx.beginPath();
+        let prevPx = 0, prevPy = baseY;
+
+        for (let i = 0; i <= RIBBON_POINTS; i++) {
+          const px = (width / RIBBON_POINTS) * i;
+          const wave = Math.sin(px * 0.0035 + t * 0.8 + r * 1.2) * 28 +
+                       Math.cos(px * 0.007 - t * 0.5) * 14;
+
+          let dynamicY = baseY + wave;
+
+          // Mouse proximity deformation
+          if (mouse.x > -1000) {
+            const dx = px - mouse.x;
+            const dy = dynamicY - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 220) {
+              const push = (1 - dist / 220) * 35;
+              dynamicY += (dy > 0 ? push : -push);
+            }
+          }
+
+          if (i === 0) {
+            ctx.moveTo(px, dynamicY);
+          } else {
+            // Smooth curve
+            const midX = (prevPx + px) / 2;
+            const midY = (prevPy + dynamicY) / 2;
+            ctx.quadraticCurveTo(prevPx, prevPy, midX, midY);
+          }
+          prevPx = px;
+          prevPy = dynamicY;
+
+          // Traveling caliper light pulses
+          const pulseOffset = (t * 1.2 + r * 0.4) % 1;
+          const targetIndex = Math.floor(pulseOffset * RIBBON_POINTS);
+          if (i === targetIndex) {
+            ctx.fillStyle = accentGlow;
+            ctx.beginPath();
+            ctx.arc(px, dynamicY, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+
+    /* -------------------------------------------------------------
+       C. Classical Atelier 3D Wireframe Polyhedra
+       ------------------------------------------------------------- */
+    // 1. 3D Wireframe Icosahedron
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const rawIcoVerts = [
+      [-1,  phi, 0], [ 1,  phi, 0], [-1, -phi, 0], [ 1, -phi, 0],
+      [0, -1,  phi], [0,  1,  phi], [0, -1, -phi], [0,  1, -phi],
+      [ phi, 0, -1], [ phi, 0,  1], [-phi, 0, -1], [-phi, 0,  1]
+    ];
+    const icoEdges = [
+      [0,11],[0,5],[0,1],[0,7],[0,10],[1,5],[1,7],[1,8],[1,9],[2,11],
+      [2,4],[2,6],[2,10],[3,9],[3,4],[3,6],[3,8],[4,5],[4,9],[5,11],
+      [6,7],[6,8],[7,8],[8,9],[10,11],[2,3],[4,3],[6,3],[7,1],[10,6]
+    ];
+
+    // 2. 3D Wireframe Cube with internal cross braces
+    const rawCubeVerts = [
+      [-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1],
+      [-1,-1,1],  [1,-1,1],  [1,1,1],  [-1,1,1]
+    ];
+    const cubeEdges = [
+      [0,1],[1,2],[2,3],[3,0],
+      [4,5],[5,6],[6,7],[7,4],
+      [0,4],[1,5],[2,6],[3,7],
+      [0,6],[1,7] // Cross diagonal construction lines
+    ];
+
+    function renderWireframe3D(verts, edges, cx, cy, scale, rotX, rotY, rotZ, strokeStyle) {
+      const proj = [];
+      const fov = 400;
+
+      for (let i = 0; i < verts.length; i++) {
+        let [x, y, z] = verts[i];
+
+        // Scale
+        x *= scale; y *= scale; z *= scale;
+
+        // Rotate X
+        let y1 = y * Math.cos(rotX) - z * Math.sin(rotX);
+        let z1 = z * Math.cos(rotX) + y * Math.sin(rotX);
+
+        // Rotate Y
+        let x2 = x * Math.cos(rotY) + z1 * Math.sin(rotY);
+        let z2 = z1 * Math.cos(rotY) - x * Math.sin(rotY);
+
+        // Rotate Z
+        let x3 = x2 * Math.cos(rotZ) - y1 * Math.sin(rotZ);
+        let y3 = y1 * Math.cos(rotZ) + x2 * Math.sin(rotZ);
+
+        // Perspective project
+        const pz = z2 + fov;
+        const pScale = pz > 1 ? fov / pz : 1;
+        proj.push({
+          x: x3 * pScale + cx,
+          y: y3 * pScale + cy,
+          alpha: Math.max(0.15, Math.min(0.85, (z2 + scale) / (scale * 2)))
+        });
+      }
+
+      // Draw Edges
+      ctx.lineWidth = 0.85;
+      for (let i = 0; i < edges.length; i++) {
+        const [a, b] = edges[i];
+        const p1 = proj[a];
+        const p2 = proj[b];
+        const edgeAlpha = (p1.alpha + p2.alpha) * 0.5;
+
+        ctx.strokeStyle = strokeStyle.replace('ALPHA', edgeAlpha.toFixed(2));
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.stroke();
+      }
+
+      // Draw vertices
+      for (let i = 0; i < proj.length; i++) {
+        const p = proj[i];
+        ctx.fillStyle = strokeStyle.replace('ALPHA', Math.min(1, p.alpha * 1.4).toFixed(2));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    /* -------------------------------------------------------------
+       Main Animation Loop
+       ------------------------------------------------------------- */
     const observer = new IntersectionObserver((entries) => {
       isVisible = entries[0].isIntersecting;
     }, { threshold: 0.05 });
     observer.observe(heroSection);
 
-    let curRotX = 0, curRotY = 0;
-
-    function render3D() {
+    function animate() {
       if (!isVisible) {
-        requestAnimationFrame(render3D);
+        requestAnimationFrame(animate);
         return;
       }
 
       ctx.clearRect(0, 0, width, height);
+      time += 0.016;
 
-      curRotX += (mouse.targetX - curRotX) * 0.08;
-      curRotY += (mouse.targetY - curRotY) * 0.08;
-      scrollVelocity *= 0.92; // Decay scroll velocity smoothly
+      // Mouse velocity decay
+      mouse.vx *= 0.90;
+      mouse.vy *= 0.90;
 
-      const cx = width / 2;
-      const cy = height / 2;
-      const projected = [];
+      // Lerp tilt
+      mouse.curTiltX += (mouse.targetTiltX - mouse.curTiltX) * 0.06;
+      mouse.curTiltY += (mouse.targetTiltY - mouse.curTiltY) * 0.06;
 
-      // Project particles to 2D
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        const pos = p.update(curRotX, curRotY, scrollVelocity, mouse.rawX, mouse.rawY, cx, cy);
-        const depth = pos.z + FOV;
+      // 1. Draw Undulating Kinetic Topography
+      drawContourRibbons(time, mouse.curTiltX, mouse.curTiltY);
 
-        if (depth > 10) {
-          const scale = FOV / depth;
-          const sx = pos.x * scale + cx;
-          const sy = pos.y * scale + cy;
-
-          // Star pulse factor
-          const pulse = 0.85 + Math.sin(p.pulseAngle) * 0.25;
-          const r = Math.max(0.7, p.baseRadius * scale * pulse);
-          const alpha = Math.min(0.95, Math.max(0.15, (scale * 0.9) * pulse));
-
-          projected.push({ sx, sy, r, alpha, colorBase: p.colorBase, type: p.type });
-
-          // Draw Glowing Star
-          ctx.beginPath();
-          ctx.arc(sx, sy, r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${p.colorBase}, ${alpha})`;
-          ctx.fill();
-
-          // Outer halo on larger stars
-          if (r > 2.2) {
-            ctx.beginPath();
-            ctx.arc(sx, sy, r * 2.6, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${p.colorBase}, ${alpha * 0.22})`;
-            ctx.fill();
-          }
-
-          // Twinkle cross on prominent beacon stars
-          if (p.type === 'ink' && r > 2.6) {
-            ctx.strokeStyle = `rgba(196, 181, 253, ${alpha * 0.45})`;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(sx - r * 2.8, sy);
-            ctx.lineTo(sx + r * 2.8, sy);
-            ctx.moveTo(sx, sy - r * 2.8);
-            ctx.lineTo(sx, sy + r * 2.8);
-            ctx.stroke();
-          }
-        }
+      // 2. Update & Draw Fluid Graphite Streamlines
+      for (let i = 0; i < streamlines.length; i++) {
+        streamlines[i].update(time);
+        streamlines[i].draw(ctx);
       }
 
-      // Draw constellation connective lines between neighboring stars
-      ctx.lineWidth = 0.75;
-      for (let i = 0; i < projected.length; i++) {
-        for (let j = i + 1; j < projected.length; j++) {
-          const p1 = projected[i];
-          const p2 = projected[j];
-          const dx = p1.sx - p2.sx;
-          const dy = p1.sy - p2.sy;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+      // 3. Draw 3D Classical Atelier Polyhedra
+      // A. Icosahedron (Left orbit)
+      if (width > 600) {
+        const icoCX = Math.min(260, width * 0.18);
+        const icoCY = height * 0.45;
+        renderWireframe3D(
+          rawIcoVerts, icoEdges,
+          icoCX, icoCY,
+          65,
+          time * 0.4 + mouse.curTiltY,
+          time * 0.6 + mouse.curTiltX,
+          time * 0.2,
+          'rgba(168, 85, 247, ALPHA)'
+        );
 
-          if (dist < 110) {
-            const lineAlpha = (1 - dist / 110) * 0.25;
-            // Gradient or dual-tone stroke
-            ctx.strokeStyle = (p1.type === 'ink' || p2.type === 'ink')
-              ? `rgba(168, 85, 247, ${lineAlpha})`
-              : `rgba(56, 189, 248, ${lineAlpha * 0.85})`;
-            ctx.beginPath();
-            ctx.moveTo(p1.sx, p1.sy);
-            ctx.lineTo(p2.sx, p2.sy);
-            ctx.stroke();
-          }
-        }
-
-        // Draw interactive line from cursor to nearby stars
-        if (mouse.rawX > -1000) {
-          const p = projected[i];
-          const dx = p.sx - mouse.rawX;
-          const dy = p.sy - mouse.rawY;
-          const mouseDist = Math.sqrt(dx * dx + dy * dy);
-          if (mouseDist < 120) {
-            const mLineAlpha = (1 - mouseDist / 120) * 0.45;
-            ctx.strokeStyle = `rgba(196, 181, 253, ${mLineAlpha})`;
-            ctx.beginPath();
-            ctx.moveTo(mouse.rawX, mouse.rawY);
-            ctx.lineTo(p.sx, p.sy);
-            ctx.stroke();
-          }
-        }
+        // B. Perspective Golden Cube (Right orbit)
+        const cubeCX = Math.max(width - 260, width * 0.82);
+        const cubeCY = height * 0.52;
+        renderWireframe3D(
+          rawCubeVerts, cubeEdges,
+          cubeCX, cubeCY,
+          50,
+          time * -0.5 + mouse.curTiltY,
+          time * 0.45 + mouse.curTiltX,
+          time * 0.3,
+          'rgba(56, 189, 248, ALPHA)'
+        );
       }
 
-      requestAnimationFrame(render3D);
+      requestAnimationFrame(animate);
     }
-    render3D();
+    animate();
   }
 
   /* ==========================================================================
