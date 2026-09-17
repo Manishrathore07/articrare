@@ -267,6 +267,73 @@ document.addEventListener('DOMContentLoaded', () => {
     render3D();
   }
 
+  /* ==========================================================================
+     Studio Torchlight & Dynamic Cursor Spotlight (taste-skill / impeccable)
+     ========================================================================== */
+  const heroTorch = document.getElementById('heroTorchlight');
+  const heroSec = document.getElementById('hero');
+  if (heroTorch && heroSec) {
+    let torchX = window.innerWidth / 2, torchY = 250;
+    let targetTorchX = torchX, targetTorchY = torchY;
+    let torchActive = false;
+
+    heroSec.addEventListener('mousemove', (e) => {
+      const rect = heroSec.getBoundingClientRect();
+      targetTorchX = e.clientX - rect.left;
+      targetTorchY = e.clientY - rect.top;
+      torchActive = true;
+    });
+
+    heroSec.addEventListener('mouseleave', () => {
+      torchActive = false;
+    });
+
+    function updateTorch() {
+      if (torchActive) {
+        torchX += (targetTorchX - torchX) * 0.08;
+        torchY += (targetTorchY - torchY) * 0.08;
+        heroTorch.style.setProperty('--torch-x', `${torchX.toFixed(1)}px`);
+        heroTorch.style.setProperty('--torch-y', `${torchY.toFixed(1)}px`);
+        heroTorch.style.opacity = '1';
+      } else {
+        heroTorch.style.opacity = '0.5';
+      }
+      requestAnimationFrame(updateTorch);
+    }
+    updateTorch();
+  }
+
+  /* ==========================================================================
+     Navbar Scroll Compacting & Frosted Glass Dynamics
+     ========================================================================== */
+  const mainNavbar = document.getElementById('mainNavbar');
+  if (mainNavbar) {
+    const handleNavScroll = () => {
+      if (window.scrollY > 30) {
+        mainNavbar.classList.add('scrolled');
+      } else {
+        mainNavbar.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', handleNavScroll, { passive: true });
+    handleNavScroll();
+  }
+
+  /* ==========================================================================
+     Magnetic Kinetic Buttons (Awwwards-grade Spring Physics)
+     ========================================================================== */
+  const magneticBtns = document.querySelectorAll('.btn-magnetic');
+  magneticBtns.forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.28}px, ${y * 0.28}px) scale(1.03)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = 'translate(0px, 0px) scale(1)';
+    });
+  });
 
   /* ==========================================================================
      2. 3D Perspective Card Tilt & Dynamic Specular Sheen Engine
