@@ -105,6 +105,16 @@
                   <span class="like-count">{{ art.likes }}</span> Likes
                 </button>
                 <span class="timestamp">{{ art.created_at|timesince }} ago</span>
+
+                {% if user.is_authenticated and user.is_staff or user.is_authenticated and user.is_superuser or user.is_authenticated and user == art.user %}
+                  <form method="POST" action="{% url 'delete_artwork' art.id %}" class="profile-delete-form" onsubmit="return confirm('Permanently delete &quot;{{ art.title|escapejs }}&quot;?');" style="margin-left: auto;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete-mini" title="Delete sketch (Developer / Creator)">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      <span>Delete</span>
+                    </button>
+                  </form>
+                {% endif %}
               </div>
             </div>
           </article>

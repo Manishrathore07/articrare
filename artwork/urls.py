@@ -5,6 +5,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('upload/', views.upload_sketch, name='upload_sketch'),
     path('sketch/<int:pk>/', views.sketch_detail, name='sketch_detail'),
+    path('sketch/<int:pk>/delete/', views.delete_artwork, name='delete_artwork'),
     path('sketch/<int:pk>/comment/', views.add_comment, name='add_comment'),
     path('like/<int:pk>/', views.toggle_like, name='toggle_like'),
     path('register/', views.register_view, name='register'),

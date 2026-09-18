@@ -110,6 +110,37 @@ def upload_sketch(request):
 
 
 @login_required(login_url='/login/')
+def delete_artwork(request, pk):
+    """
+    Allows developers (staff/superusers) or the artwork creator to permanently delete a sketch.
+    """
+    artwork = get_object_or_404(Artwork, pk=pk)
+
+    # Permission check: must be staff, superuser, or the original creator
+    is_owner = bool(artwork.user and artwork.user == request.user)
+    is_developer = bool(request.user.is_staff or request.user.is_superuser)
+
+    if not (is_owner or is_developer):
+        messages.error(request, "Permission denied: Only the developer or artwork creator can delete this image.")
+        return redirect('index')
+
+    if request.method == 'POST' or request.GET.get('confirm') == 'true':
+        title = artwork.title
+        # Delete image file from storage if present
+        if artwork.image:
+            try:
+                artwork.image.delete(save=False)
+            except Exception as e:
+                print(f"[Articrare] Error deleting image file: {e}")
+        artwork.delete()
+        messages.success(request, f'Study "{title}" has been permanently deleted.')
+        return redirect('index')
+
+    return redirect('sketch_detail', pk=pk)
+
+
+
+@login_required(login_url='/login/')
 def add_comment(request, pk):
     """Submit or update a community rating & comment on a sketch."""
     artwork = get_object_or_404(Artwork, pk=pk)
